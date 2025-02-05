@@ -17,7 +17,7 @@ public class DeckControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testDecksEndpoint() throws Exception {
+    public void testGetAllDecks() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/decks"))
                 .andExpect(status().isOk());
     }
