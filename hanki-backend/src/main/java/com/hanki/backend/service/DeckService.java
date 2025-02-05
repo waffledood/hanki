@@ -7,6 +7,8 @@ import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Component
 public class DeckService {
     private final DeckRepository deckRepository;
@@ -28,5 +30,10 @@ public class DeckService {
     @Transactional
     public Iterable<Deck> findAll() {
         return deckRepository.findAll();
+    }
+
+    @Transactional
+    public Optional<Deck> findById(Integer id) {
+        return deckRepository.findById(id);
     }
 }
