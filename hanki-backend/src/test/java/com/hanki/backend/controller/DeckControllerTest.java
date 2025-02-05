@@ -48,4 +48,13 @@ public class DeckControllerTest {
         mockMvc.perform(get("/decks/" + existingDeckId))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void testGetDeckByIdNotFound() throws Exception {
+        // Define a non existent Deck id
+        int nonExistentDeckId = 99;
+
+        mockMvc.perform(get("/decks/" + nonExistentDeckId))
+                .andExpect(status().isNotFound());
+    }
 }
