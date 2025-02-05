@@ -55,6 +55,7 @@ public class DeckControllerTest {
         int nonExistentDeckId = 99;
 
         mockMvc.perform(get("/decks/" + nonExistentDeckId))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Deck not found with id: " + nonExistentDeckId));
     }
 }
