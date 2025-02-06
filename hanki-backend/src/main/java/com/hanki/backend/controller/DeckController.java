@@ -29,8 +29,10 @@ public class DeckController {
     }
 
     @PostMapping
-    public Deck createDeck(@Valid @RequestBody DeckPostDto deckPostDto) {
-        return deckService.createDeck(deckPostDto);
+    public ResponseEntity<Deck> createDeck(@Valid @RequestBody DeckPostDto deckPostDto) {
+        Deck deck = deckService.createDeck(deckPostDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(deck);
     }
 
     @GetMapping("/{id}")
