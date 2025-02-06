@@ -1,5 +1,6 @@
 package com.hanki.backend.service;
 
+import com.hanki.backend.dto.DeckPostDto;
 import com.hanki.backend.model.Deck;
 import com.hanki.backend.repository.DeckRepository;
 import jakarta.annotation.PostConstruct;
@@ -35,5 +36,14 @@ public class DeckService {
     @Transactional
     public Optional<Deck> findById(Integer id) {
         return deckRepository.findById(id);
+    }
+
+    @Transactional
+    public Deck createDeck(DeckPostDto deckPostDto) {
+        Deck deck = new Deck();
+        deck.setName(deckPostDto.getName());
+        deck.setDescription(deckPostDto.getDescription());
+
+        return deckRepository.save(deck);
     }
 }
