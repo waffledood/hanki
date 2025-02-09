@@ -17,6 +17,46 @@ public class CardPostDto {
     @Min(value = 0, message = "Card ID must be at least 0")
     private Integer deckId;
 
+    public String getFrontText() {
+        return frontText;
+    }
+
+    public void setFrontText(String frontText) {
+        this.frontText = frontText;
+    }
+
+    public String getBackText() {
+        return backText;
+    }
+
+    public void setBackText(String backText) {
+        this.backText = backText;
+    }
+
+    public Integer getDeckId() {
+        return deckId;
+    }
+
+    public void setDeckId(Integer deckId) {
+        this.deckId = deckId;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime updatedAt = LocalDateTime.now();
