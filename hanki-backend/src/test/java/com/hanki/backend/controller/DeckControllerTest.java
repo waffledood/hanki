@@ -5,11 +5,12 @@ import com.hanki.backend.dto.DeckPostDto;
 import com.hanki.backend.model.Deck;
 import com.hanki.backend.service.DeckService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -17,12 +18,12 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=test")
 @AutoConfigureMockMvc
 public class DeckControllerTest {
 
@@ -32,7 +33,7 @@ public class DeckControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Mock
+    @MockitoBean
     private DeckService deckService;
 
     @Test
@@ -74,6 +75,15 @@ public class DeckControllerTest {
         DeckPostDto deckDto = new DeckPostDto();
         deckDto.setName("Test Deck");
         deckDto.setDescription("Test Description");
+
+        // Mock the behavior of the DeckService
+        Deck deck = new Deck();
+        deck.setId(1);  // Set a mock ID for the created deck
+        deck.setName("Test Deck");
+        deck.setDescription("Test Description");
+
+        // When the saveDeck method is called, return the mock Deck
+        Mockito.when(deckService.createDeck(Mockito.any(DeckPostDto.class))).thenReturn(deck);
 
         // Convert the DTO to JSON
         String deckJson = objectMapper.writeValueAsString(deckDto);
