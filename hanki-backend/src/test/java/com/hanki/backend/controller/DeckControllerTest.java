@@ -5,6 +5,7 @@ import com.hanki.backend.dto.DeckPostDto;
 import com.hanki.backend.model.Deck;
 import com.hanki.backend.service.DeckService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -74,6 +75,15 @@ public class DeckControllerTest {
         DeckPostDto deckDto = new DeckPostDto();
         deckDto.setName("Test Deck");
         deckDto.setDescription("Test Description");
+
+        // Mock the behavior of the DeckService
+        Deck deck = new Deck();
+        deck.setId(1);  // Set a mock ID for the created deck
+        deck.setName("Test Deck");
+        deck.setDescription("Test Description");
+
+        // When the saveDeck method is called, return the mock Deck
+        Mockito.when(deckService.createDeck(Mockito.any(DeckPostDto.class))).thenReturn(deck);
 
         // Convert the DTO to JSON
         String deckJson = objectMapper.writeValueAsString(deckDto);
