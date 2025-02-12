@@ -9,6 +9,20 @@ on:
 jobs:
   pr-validation:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U testuser -d testdb"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout Repository
@@ -23,6 +37,12 @@ jobs:
 
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
+        working-directory: hanki-backend
+
+      - name: Start Docker (Required for TestContainers)
+        run: |
+          sudo systemctl start docker
+          docker --version
         working-directory: hanki-backend
 
       - name: Build and Verify Compilation
