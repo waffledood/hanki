@@ -107,4 +107,28 @@ public class CardControllerTest {
         // You can verify the returned values (for example, the name or ID of the created deck)
         assertTrue(responseContent.contains("Sample front text 1"));
     }
+
+    @Test
+    public void testPostCardInvalidFrontText() throws Exception {
+        // Define sample values of created Card
+        String emptyFrontText = "";
+        String backText = "Sample back text 1";
+        Integer deckId = 10;
+
+        // Initialize your CardDto with necessary values for the test
+        CardPostDto cardDto = new CardPostDto();
+        cardDto.setFrontText(emptyFrontText);
+        cardDto.setBackText(backText);
+        cardDto.setDeckId(deckId);
+
+        // Convert the DTO to JSON
+        String cardJson = objectMapper.writeValueAsString(cardDto);
+
+        // Perform POST request
+        MvcResult result = mockMvc.perform(post("/cards")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cardJson))
+                        .andExpect(status().isBadRequest())  // Expect HTTP 400 Bad Request status
+                        .andReturn();
+    }
 }
