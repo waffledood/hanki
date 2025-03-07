@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -13,9 +14,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-
-        http
+        return http
+                // disable CSRF
+                .csrf(customizer -> customizer.disable())
                 // no auth required on the /cards endpoint
                 .authorizeHttpRequests(request -> request.requestMatchers("cards").permitAll())
                 // all other endpoints require auth
@@ -23,8 +24,9 @@ public class SecurityConfig {
                 // to allow requests via browser
                 .formLogin(Customizer.withDefaults())
                 // to allow API/HTTP requests
-                .httpBasic(Customizer.withDefaults());
-
-        return http.build();
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
     }
 }
