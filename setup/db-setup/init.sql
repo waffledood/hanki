@@ -17,3 +17,17 @@ CREATE TABLE card (
     updated_at TIMESTAMP DEFAULT NOW(),
     CONSTRAINT fk_card_deck FOREIGN KEY (deck_id) REFERENCES deck(id) ON DELETE CASCADE
 );
+
+-- Creation of users table
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    uuid UUID DEFAULT gen_random_uuid(),
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'USER',
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
