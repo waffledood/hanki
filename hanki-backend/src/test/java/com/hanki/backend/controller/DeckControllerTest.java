@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -37,6 +38,7 @@ public class DeckControllerTest {
     private DeckService deckService;
 
     @Test
+    @WithMockUser
     public void testGetAllDecks() throws Exception {
         mockMvc.perform(get("/decks"))
                 .andExpect(status().isOk())
@@ -44,6 +46,14 @@ public class DeckControllerTest {
     }
 
     @Test
+    public void testGetAllDecksWithNoAuth() throws Exception {
+        mockMvc.perform(get("/decks"))
+                // 401 error
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser
     public void testGetDeckById() throws Exception {
         // Create mock Deck
         int existingDeckId = 1;
@@ -60,6 +70,23 @@ public class DeckControllerTest {
     }
 
     @Test
+    public void testGetDeckByIdWithNoAuth() throws Exception {
+        // Create mock Deck
+        int existingDeckId = 1;
+        Deck mockDeck = new Deck();
+        mockDeck.setId(existingDeckId);
+        mockDeck.setName("Mock Deck Name");
+        mockDeck.setDescription("Mock Deck Description");
+
+        // Mock the service method to return the mock Deck created
+        when(deckService.findById(existingDeckId)).thenReturn(Optional.of(mockDeck));
+
+        mockMvc.perform(get("/decks/" + existingDeckId))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser
     public void testGetDeckByIdNotFound() throws Exception {
         // Define a non existent Deck id
         int nonExistentDeckId = 99;
@@ -70,6 +97,7 @@ public class DeckControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testPostDeck() throws Exception {
         // Initialize your DeckDto with necessary values for the test
         DeckPostDto deckDto = new DeckPostDto();
@@ -99,5 +127,32 @@ public class DeckControllerTest {
         String responseContent = result.getResponse().getContentAsString();
         // You can verify the returned values (for example, the name or ID of the created deck)
         assertTrue(responseContent.contains("Test Deck"));
+    }
+
+    @Test
+    public void testPostDeckWithNoAuth() throws Exception {
+        // Initialize your DeckDto with necessary values for the test
+        DeckPostDto deckDto = new DeckPostDto();
+        deckDto.setName("Test Deck");
+        deckDto.setDescription("Test Description");
+
+        // Mock the behavior of the DeckService
+        Deck deck = new Deck();
+        deck.setId(1);  // Set a mock ID for the created deck
+        deck.setName("Test Deck");
+        deck.setDescription("Test Description");
+
+        // When the saveDeck method is called, return the mock Deck
+        Mockito.when(deckService.createDeck(Mockito.any(DeckPostDto.class))).thenReturn(deck);
+
+        // Convert the DTO to JSON
+        String deckJson = objectMapper.writeValueAsString(deckDto);
+
+        // Perform POST request
+        mockMvc
+                .perform(post("/decks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(deckJson))
+                .andExpect(status().is4xxClientError());
     }
 }

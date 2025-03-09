@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -37,6 +38,7 @@ public class CardControllerTest {
     private CardService cardService;
 
     @Test
+    @WithMockUser
     public void testGetAllCards() throws Exception {
         mockMvc.perform(get("/cards"))
                 .andExpect(status().isOk())
@@ -44,6 +46,14 @@ public class CardControllerTest {
     }
 
     @Test
+    public void testGetAllCardsWithNoAuth() throws Exception {
+        mockMvc.perform(get("/cards"))
+                // 401 error
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser
     public void testGetCardById() throws Exception {
         // Create mock Deck
         int existingCardId = 1;
@@ -61,6 +71,24 @@ public class CardControllerTest {
     }
 
     @Test
+    public void testGetCardByIdWithNoAuth() throws Exception {
+        // Create mock Deck
+        int existingCardId = 1;
+        Card mockCard = new Card();
+        mockCard.setId(existingCardId);
+        mockCard.setFrontText("Mock Front Text");
+        mockCard.setBackText("Mock Back Text");
+        mockCard.setDeck(new Deck());
+
+        // Mock the service method to return the mock Card created
+        when(cardService.findById(existingCardId)).thenReturn(Optional.of(mockCard));
+
+        mockMvc.perform(get("/cards/" + existingCardId))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser
     public void testGetCardByIdNotFound() throws Exception {
         // Define a non-existent Card id
         int nonExistentCardId = 99;
@@ -71,6 +99,7 @@ public class CardControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void testPostCard() throws Exception {
         // Define sample values of created Card
         String frontText = "Sample front text 1";
@@ -109,6 +138,40 @@ public class CardControllerTest {
     }
 
     @Test
+    public void testPostCardWithNoAuth() throws Exception {
+        // Define sample values of created Card
+        String frontText = "Sample front text 1";
+        String backText = "Sample back text 1";
+        Integer deckId = 10;
+
+        // Initialize your CardDto with necessary values for the test
+        CardPostDto cardDto = new CardPostDto();
+        cardDto.setFrontText(frontText);
+        cardDto.setBackText(backText);
+        cardDto.setDeckId(deckId);
+
+        // Mock the behavior of the CardService
+        Card card = new Card();
+        card.setFrontText(frontText);
+        card.setBackText(backText);
+        card.setDeck(new Deck()); // empty Deck
+
+        // When the saveDeck method is called, return the mock Card
+        Mockito.when(cardService.createCard(Mockito.any(CardPostDto.class))).thenReturn(card);
+
+        // Convert the DTO to JSON
+        String cardJson = objectMapper.writeValueAsString(cardDto);
+
+        // Perform POST request
+        mockMvc.
+                perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(cardJson))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUser
     public void testPostCardInvalidFrontText() throws Exception {
         // Define sample values of created Card
         String emptyFrontText = "";

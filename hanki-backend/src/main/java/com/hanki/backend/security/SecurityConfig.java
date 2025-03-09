@@ -25,8 +25,8 @@ public class SecurityConfig {
         return http
                 // disable CSRF
                 .csrf(customizer -> customizer.disable())
-                // no auth required on the /cards endpoint
-                .authorizeHttpRequests(request -> request.requestMatchers("cards").permitAll())
+                // TODO - Update the exact endpoint(s) that don't require auth
+                .authorizeHttpRequests(request -> request.requestMatchers("/").permitAll())
                 // all other endpoints require auth
                 .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 // to allow requests via browser
