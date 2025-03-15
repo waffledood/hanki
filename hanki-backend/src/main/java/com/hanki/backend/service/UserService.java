@@ -1,5 +1,6 @@
 package com.hanki.backend.service;
 
+import com.hanki.backend.dto.UserPostDto;
 import com.hanki.backend.model.User;
 import com.hanki.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,12 @@ public class UserService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public User registerUser(User user) {
-        user.setPassword(encoder.encode(user.getPassword()));
+    public User registerUser(UserPostDto userPostDto) {
+        User user = new User();
+        user.setUsername(userPostDto.getUsername());
+        user.setPassword(encoder.encode(userPostDto.getPassword()));
+        user.setEmail(userPostDto.getEmail());
+
         return userRepository.save(user);
     }
 
