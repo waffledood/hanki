@@ -29,7 +29,7 @@ public class SecurityConfig {
                 // disable CSRF
                 .csrf(customizer -> customizer.disable())
                 // TODO - Update the exact endpoint(s) that don't require auth
-                .authorizeHttpRequests(request -> request.requestMatchers("/").permitAll())
+                .authorizeHttpRequests(request -> request.requestMatchers("/users/register").permitAll())
                 // all other endpoints require auth
                 .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 // to allow requests via browser
