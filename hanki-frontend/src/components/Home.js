@@ -2,16 +2,6 @@
 
 import React, { useState } from "react";
 
-// interface Deck {
-//   id: number;
-//   name: string;
-//   totalCards: number;
-//   dueCards: number;
-//   lastStudied: string;
-//   progress: number;
-//   category: string;
-// }
-
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("name");
