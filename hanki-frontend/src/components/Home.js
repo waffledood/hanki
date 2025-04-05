@@ -117,7 +117,7 @@ function Home() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <img src="/logo512.png" alt="Anki Logo" className="h-10 w-10" />
-            <h1 className="text-2xl font-bold text-gray-800">Anki</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Hanki</h1>
           </div>
           <div className="flex items-center space-x-6">
             <nav className="hidden md:flex space-x-6">
