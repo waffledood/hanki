@@ -7,6 +7,7 @@ function Home() {
   const [sortBy, setSortBy] = useState("name");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newDeckName, setNewDeckName] = useState("");
+  const [newDeckDescription, setNewDeckDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const decks = [
@@ -76,9 +77,10 @@ function Home() {
   ];
 
   const handleCreateDeck = () => {
-    if (newDeckName.trim()) {
+    if (newDeckName.trim() && newDeckDescription.trim()) {
       setShowCreateModal(false);
       setNewDeckName("");
+      setNewDeckDescription("");
     }
   };
 
@@ -261,6 +263,13 @@ function Home() {
               placeholder="Deck name"
               value={newDeckName}
               onChange={(e) => setNewDeckName(e.target.value)}
+              className="w-full border rounded-lg px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="text"
+              placeholder="Deck description"
+              value={newDeckDescription}
+              onChange={(e) => setNewDeckDescription(e.target.value)}
               className="w-full border rounded-lg px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <div className="flex justify-end space-x-4">
