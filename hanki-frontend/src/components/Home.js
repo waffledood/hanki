@@ -9,6 +9,7 @@ function Home() {
   const [newDeckName, setNewDeckName] = useState("");
   const [newDeckDescription, setNewDeckDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [errors, setErrors] = useState({ name: "", description: "" });
 
   const decks = [
     {
@@ -77,7 +78,33 @@ function Home() {
   ];
 
   const handleCreateDeck = () => {
-    if (newDeckName.trim() && newDeckDescription.trim()) {
+    let hasError = false;
+    const newErrors = { name: "", description: "" };
+
+    if (!newDeckName.trim()) {
+      newErrors.name = "Deck name is required.";
+      hasError = true;
+    } else if (newDeckName.trim().length > 255) {
+      newErrors.name = "Deck name can only have a maximum of 255 characters.";
+      hasError = true;
+    }
+
+    if (!newDeckDescription.trim()) {
+      newErrors.description = "Deck description is required.";
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+
+    if (!hasError) {
+      // Proceed with creating the deck
+      setShowCreateModal(false);
+      setNewDeckName("");
+      setNewDeckDescription("");
+      setErrors({ name: "", description: "" });
+    }
+
+    if (newDeckName.trim().length <= 255 && newDeckDescription.trim()) {
       setShowCreateModal(false);
       setNewDeckName("");
       setNewDeckDescription("");
@@ -258,13 +285,24 @@ function Home() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-semibold mb-4">Create New Deck</h2>
-            <input
-              type="text"
-              placeholder="Deck name"
-              value={newDeckName}
-              onChange={(e) => setNewDeckName(e.target.value)}
-              className="w-full border rounded-lg px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Deck name"
+                value={newDeckName}
+                onChange={(e) => setNewDeckName(e.target.value)}
+                className={`"w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  ${
+                    errors.name
+                      ? "border-red-500 focus:ring-red-500"
+                      : "focus:ring-blue-500"
+                  }
+                `}
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
+            </div>
             <input
               type="text"
               placeholder="Deck description"
