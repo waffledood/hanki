@@ -291,7 +291,7 @@ function Home() {
                 placeholder="Deck name"
                 value={newDeckName}
                 onChange={(e) => setNewDeckName(e.target.value)}
-                className={`"w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500
                   ${
                     errors.name
                       ? "border-red-500 focus:ring-red-500"
@@ -303,13 +303,26 @@ function Home() {
                 <p className="text-red-500 text-sm mt-1">{errors.name}</p>
               )}
             </div>
-            <input
-              type="text"
-              placeholder="Deck description"
-              value={newDeckDescription}
-              onChange={(e) => setNewDeckDescription(e.target.value)}
-              className="w-full border rounded-lg px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Deck description"
+                value={newDeckDescription}
+                onChange={(e) => setNewDeckDescription(e.target.value)}
+                className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500
+                  ${
+                    errors.description
+                      ? "border-red-500 focus:ring-red-500"
+                      : "focus:ring-blue-500"
+                  }
+                `}
+              />
+              {errors.description && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.description}
+                </p>
+              )}
+            </div>
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => setShowCreateModal(false)}
