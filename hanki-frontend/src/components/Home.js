@@ -222,7 +222,7 @@ function Home() {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 space-y-4 md:space-y-0">
           <button
             onClick={() => setShowCreateModal(true)}
-            className="!rounded-button bg-blue-600 text-white px-6 py-3 flex items-center space-x-2 hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap"
+            className="!rounded-lg bg-blue-600 text-white px-6 py-3 flex items-center space-x-2 hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap"
           >
             <i className="fas fa-plus"></i>
             <span>Create New Deck</span>
@@ -311,7 +311,7 @@ function Home() {
                   Last studied:{" "}
                   {new Date(deck.lastStudied).toLocaleDateString()}
                 </span>
-                <button className="!rounded-button bg-green-500 text-white px-4 py-2 text-sm hover:bg-green-600 transition-colors whitespace-nowrap">
+                <button className="!rounded-lg bg-green-500 text-white px-4 py-2 text-sm hover:bg-green-600 transition-colors whitespace-nowrap">
                   Study Now
                 </button>
               </div>
@@ -366,13 +366,13 @@ function Home() {
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => handleShowCreateModal(false)}
-                className="!rounded-button text-gray-600 px-4 py-2 hover:bg-gray-100 whitespace-nowrap cursor-pointer"
+                className="!rounded-lg bg-gray-100 text-gray-600 px-4 py-2 hover:bg-gray-200 whitespace-nowrap cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateDeck}
-                className="!rounded-button bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 whitespace-nowrap cursor-pointer"
+                className="!rounded-lg bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 whitespace-nowrap cursor-pointer"
               >
                 Create Deck
               </button>
