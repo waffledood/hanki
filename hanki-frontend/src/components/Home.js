@@ -106,6 +106,18 @@ function Home() {
     }
   };
 
+  const handleShowCreateModal = (show) => {
+    if (!show) {
+      // Close modal
+      setShowCreateModal(false);
+
+      // Clean up
+      setNewDeckName("");
+      setNewDeckDescription("");
+      setErrors({ name: "", description: "" });
+    }
+  };
+
   const handleCreateDeck = () => {
     let hasError = false;
     const newErrors = { name: "", description: "" };
@@ -353,7 +365,7 @@ function Home() {
             </div>
             <div className="flex justify-end space-x-4">
               <button
-                onClick={() => setShowCreateModal(false)}
+                onClick={() => handleShowCreateModal(false)}
                 className="!rounded-button px-4 py-2 text-gray-600 hover:text-gray-800 whitespace-nowrap cursor-pointer"
               >
                 Cancel
