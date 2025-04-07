@@ -366,7 +366,7 @@ function Home() {
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => handleShowCreateModal(false)}
-                className="!rounded-button px-4 py-2 text-gray-600 hover:text-gray-800 whitespace-nowrap cursor-pointer"
+                className="!rounded-button text-gray-600 px-4 py-2 hover:bg-gray-100 whitespace-nowrap cursor-pointer"
               >
                 Cancel
               </button>
