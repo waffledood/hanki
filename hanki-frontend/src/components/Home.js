@@ -77,6 +77,35 @@ function Home() {
     "Science",
   ];
 
+  const createDeck = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/hanki/decks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: newDeckName,
+          description: newDeckDescription,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const newDeck = await response.json();
+
+      // log new Deck
+      console.log(newDeck);
+
+      // add new Deck to list of Decks
+    } catch (error) {
+      // handle error
+      console.log(error);
+    }
+  };
+
   const handleCreateDeck = () => {
     let hasError = false;
     const newErrors = { name: "", description: "" };
@@ -98,16 +127,15 @@ function Home() {
 
     if (!hasError) {
       // Proceed with creating the deck
+      createDeck();
+
+      // Close modal
       setShowCreateModal(false);
+
+      // Clean up
       setNewDeckName("");
       setNewDeckDescription("");
       setErrors({ name: "", description: "" });
-    }
-
-    if (newDeckName.trim().length <= 255 && newDeckDescription.trim()) {
-      setShowCreateModal(false);
-      setNewDeckName("");
-      setNewDeckDescription("");
     }
   };
 
