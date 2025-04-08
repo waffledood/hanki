@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Navbar from "./Navbar";
+import Deck from "../components/Deck";
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -152,12 +153,6 @@ function Home() {
     }
   };
 
-  const getProgressColor = (progress) => {
-    if (progress >= 80) return "bg-green-500";
-    if (progress >= 60) return "bg-yellow-500";
-    return "bg-red-500";
-  };
-
   const filteredDecks = decks
     .filter(
       (deck) =>
@@ -234,57 +229,28 @@ function Home() {
 
         {/* Decks Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredDecks.map((deck) => (
-            <div
-              key={deck.id}
-              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {deck.name}
-                </h3>
-                <button className="text-gray-400 hover:text-gray-600">
-                  <i className="fas fa-ellipsis-h"></i>
-                </button>
-              </div>
-
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="flex items-center space-x-1">
-                  <i className="fas fa-layer-group text-gray-400"></i>
-                  <span className="text-sm text-gray-600">
-                    {deck.totalCards} cards
-                  </span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <i className="fas fa-clock text-gray-400"></i>
-                  <span className="text-sm text-gray-600">
-                    {deck.dueCards} due
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <div className="h-2 bg-gray-200 rounded-full">
-                  <div
-                    className={`h-2 rounded-full ${getProgressColor(
-                      deck.progress
-                    )}`}
-                    style={{ width: `${deck.progress}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">
-                  Last studied:{" "}
-                  {new Date(deck.lastStudied).toLocaleDateString()}
-                </span>
-                <button className="!rounded-lg bg-green-500 text-white px-4 py-2 text-sm hover:bg-green-600 transition-colors whitespace-nowrap">
-                  Study Now
-                </button>
-              </div>
-            </div>
-          ))}
+          {filteredDecks.map(
+            ({
+              id,
+              name,
+              totalCards,
+              dueCards,
+              lastStudied,
+              progress,
+              category,
+            }) => (
+              <Deck
+                key={id}
+                id={id}
+                name={name}
+                totalCards={totalCards}
+                dueCards={dueCards}
+                lastStudied={lastStudied}
+                progress={progress}
+                category={category}
+              />
+            )
+          )}
         </div>
       </main>
 
