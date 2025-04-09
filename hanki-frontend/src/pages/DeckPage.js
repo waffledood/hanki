@@ -96,15 +96,15 @@ function DeckPage() {
               <i className="fas fa-book-open mr-2"></i>
               Study Now
             </button>
-            <button className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
               <i className="fas fa-random mr-2"></i>
               Shuffle
             </button>
-            <button className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
               <i className="fas fa-sort mr-2"></i>
               Sort
             </button>
-            <button className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
               <i className="fas fa-filter mr-2"></i>
               Filter
             </button>
