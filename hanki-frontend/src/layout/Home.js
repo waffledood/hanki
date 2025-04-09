@@ -1,6 +1,7 @@
 // The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
 
 import React, { useState } from "react";
+import MainLayout from "./MainLayout";
 import Navbar from "./Navbar";
 import Deck from "../components/Deck";
 
@@ -176,7 +177,7 @@ function Home() {
     });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <MainLayout>
       <Navbar />
 
       {/* Main Content */}
@@ -314,7 +315,7 @@ function Home() {
           </div>
         </div>
       )}
-    </div>
+    </MainLayout>
   );
 }
 
