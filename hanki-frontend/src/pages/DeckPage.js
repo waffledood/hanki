@@ -3,6 +3,7 @@ import MainLayout from "../layout/MainLayout";
 
 function DeckPage() {
   const [expandedCardId, setExpandedCardId] = useState();
+
   // Sample deck data
   const deck = {
     name: "Advanced JavaScript Concepts",
@@ -10,6 +11,7 @@ function DeckPage() {
       "Master modern JavaScript features, patterns, and best practices",
     totalCards: 24,
   };
+
   // Sample cards data
   const cards = [
     {
@@ -49,6 +51,7 @@ function DeckPage() {
         "The == (equality) operator checks for value equality after converting both values to a common type. The === (strict equality) operator checks for both value and type equality without type conversion.",
     },
   ];
+
   const toggleCardExpansion = (id) => {
     if (expandedCardId === id) {
       setExpandedCardId(null);
@@ -56,10 +59,78 @@ function DeckPage() {
       setExpandedCardId(id);
     }
   };
+
   const truncateText = (text, maxLength) => {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + "...";
   };
+
+  const cardList = (
+    <div className="space-y-4">
+      {cards.map((card) => (
+        <div
+          key={card.id}
+          className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md"
+          onClick={() => toggleCardExpansion(card.id)}
+        >
+          <div className="p-5">
+            <div className="flex justify-between items-start">
+              <h3 className="text-lg font-medium text-gray-900">
+                {card.question}
+              </h3>
+              <span className="text-gray-400">
+                <i
+                  className={`fas ${
+                    expandedCardId === card.id
+                      ? "fa-chevron-up"
+                      : "fa-chevron-down"
+                  }`}
+                ></i>
+              </span>
+            </div>
+            {expandedCardId === card.id ? (
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <p className="text-gray-700">{card.answer}</p>
+                <div className="mt-4 flex gap-2">
+                  <button className="text-indigo-600 hover:text-indigo-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+                    <i className="fas fa-edit mr-1"></i>
+                    Edit
+                  </button>
+                  <button className="text-red-600 hover:text-red-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+                    <i className="fas fa-trash-alt mr-1"></i>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="mt-2 text-sm text-gray-500">
+                {truncateText(card.answer, 100)}
+              </p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const noCardInfo = (
+    <div className="text-center py-16 bg-white rounded-lg border border-gray-200">
+      <div className="mx-auto h-24 w-24 text-gray-400 mb-4">
+        <i className="fas fa-layer-group text-6xl"></i>
+      </div>
+      <h3 className="text-lg font-medium text-gray-900">No cards yet</h3>
+      <p className="mt-1 text-gray-500">
+        Get started by adding your first flashcard to this deck.
+      </p>
+      <div className="mt-6">
+        <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md cursor-pointer !rounded-button whitespace-nowrap">
+          <i className="fas fa-plus mr-2"></i>
+          Add First Card
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <MainLayout>
       {/* Header */}
@@ -78,6 +149,7 @@ function DeckPage() {
           </div>
         </div>
       </header>
+
       {/* Main Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 flex flex-col">
         {/* Deck Information - Fixed/Floating Section */}
@@ -114,73 +186,10 @@ function DeckPage() {
 
         {/* Card List - Scrollable Section */}
         <div className="flex-1 overflow-auto pt-2">
-          {cards.length > 0 ? (
-            <div className="space-y-4">
-              {cards.map((card) => (
-                <div
-                  key={card.id}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md"
-                  onClick={() => toggleCardExpansion(card.id)}
-                >
-                  <div className="p-5">
-                    <div className="flex justify-between items-start">
-                      <h3 className="text-lg font-medium text-gray-900">
-                        {card.question}
-                      </h3>
-                      <span className="text-gray-400">
-                        <i
-                          className={`fas ${
-                            expandedCardId === card.id
-                              ? "fa-chevron-up"
-                              : "fa-chevron-down"
-                          }`}
-                        ></i>
-                      </span>
-                    </div>
-                    {expandedCardId === card.id ? (
-                      <div className="mt-4 pt-4 border-t border-gray-100">
-                        <p className="text-gray-700">{card.answer}</p>
-                        <div className="mt-4 flex gap-2">
-                          <button className="text-indigo-600 hover:text-indigo-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap">
-                            <i className="fas fa-edit mr-1"></i>
-                            Edit
-                          </button>
-                          <button className="text-red-600 hover:text-red-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap">
-                            <i className="fas fa-trash-alt mr-1"></i>
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="mt-2 text-sm text-gray-500">
-                        {truncateText(card.answer, 100)}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16 bg-white rounded-lg border border-gray-200">
-              <div className="mx-auto h-24 w-24 text-gray-400 mb-4">
-                <i className="fas fa-layer-group text-6xl"></i>
-              </div>
-              <h3 className="text-lg font-medium text-gray-900">
-                No cards yet
-              </h3>
-              <p className="mt-1 text-gray-500">
-                Get started by adding your first flashcard to this deck.
-              </p>
-              <div className="mt-6">
-                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md cursor-pointer !rounded-button whitespace-nowrap">
-                  <i className="fas fa-plus mr-2"></i>
-                  Add First Card
-                </button>
-              </div>
-            </div>
-          )}
+          {cards.length > 0 ? cardList : noCardInfo}
         </div>
       </main>
+
       {/* Floating Action Button */}
       <div className="fixed bottom-8 right-8">
         <button className="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button whitespace-nowrap">
