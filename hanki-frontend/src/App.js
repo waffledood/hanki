@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Home from "./layout/Home";
 import Settings from "./pages/Settings";
