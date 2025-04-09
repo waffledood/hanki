@@ -79,9 +79,9 @@ function DeckPage() {
         </div>
       </header>
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 flex flex-col">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 flex flex-col">
         {/* Deck Information - Fixed/Floating Section */}
-        <div className="sticky top-16 bg-gray-50 pt-4 pb-6 z-10">
+        <div className="sticky top-16 bg-gray-50 pt-4 pb-6 z-9">
           <div className="mb-4">
             <h1 className="text-3xl font-bold text-gray-900">{deck.name}</h1>
             <p className="mt-2 text-gray-600">{deck.description}</p>
