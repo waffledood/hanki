@@ -37,7 +37,7 @@ function Deck({ id, name, totalCards, dueCards, progress, lastStudied }) {
         <span className="text-sm text-gray-500">
           Last studied: {new Date(lastStudied).toLocaleDateString()}
         </span>
-        <button className="!rounded-lg bg-green-500 text-white px-4 py-2 text-sm hover:bg-green-600 transition-colors whitespace-nowrap">
+        <button className="!rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm hover:bg-indigo-700 transition-colors whitespace-nowrap">
           Study Now
         </button>
       </div>

@@ -186,7 +186,7 @@ function Home() {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 space-y-4 md:space-y-0">
           <button
             onClick={() => setShowCreateModal(true)}
-            className="!rounded-lg bg-blue-600 text-white px-6 py-3 flex items-center space-x-2 hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap"
+            className="!rounded-lg bg-indigo-600 text-white px-6 py-3 flex items-center space-x-2 hover:bg-indigo-700 transition-colors cursor-pointer whitespace-nowrap"
           >
             <i className="fas fa-plus"></i>
             <span>Create New Deck</span>
@@ -307,7 +307,7 @@ function Home() {
               </button>
               <button
                 onClick={handleCreateDeck}
-                className="!rounded-lg bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 whitespace-nowrap cursor-pointer"
+                className="!rounded-lg bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700 whitespace-nowrap cursor-pointer"
               >
                 Create Deck
               </button>
