@@ -1,6 +1,7 @@
 // The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
 
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import MainLayout from "./MainLayout";
 import Navbar from "./Navbar";
 import Deck from "../components/Deck";
@@ -240,16 +241,17 @@ function Home() {
               progress,
               category,
             }) => (
-              <Deck
-                key={id}
-                id={id}
-                name={name}
-                totalCards={totalCards}
-                dueCards={dueCards}
-                lastStudied={lastStudied}
-                progress={progress}
-                category={category}
-              />
+              <Link to={`/decks/${id}`} key={id}>
+                <Deck
+                  id={id}
+                  name={name}
+                  totalCards={totalCards}
+                  dueCards={dueCards}
+                  lastStudied={lastStudied}
+                  progress={progress}
+                  category={category}
+                />
+              </Link>
             )
           )}
         </div>
