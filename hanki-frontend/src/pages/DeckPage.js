@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 
 function DeckPage() {
@@ -139,10 +139,12 @@ function DeckPage() {
       <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center">
-            <button className="text-gray-600 hover:text-gray-900 cursor-pointer !rounded-button whitespace-nowrap">
-              <i className="fas fa-arrow-left mr-2"></i>
-              Back to Decks
-            </button>
+            <Link to="/">
+              <button className="text-gray-600 hover:text-gray-900 cursor-pointer !rounded-button whitespace-nowrap">
+                <i className="fas fa-arrow-left mr-2"></i>
+                Back to Decks
+              </button>
+            </Link>
           </div>
           <div className="flex items-center">
             <button className="text-gray-600 hover:text-gray-900 p-2 rounded-full cursor-pointer !rounded-button whitespace-nowrap">
