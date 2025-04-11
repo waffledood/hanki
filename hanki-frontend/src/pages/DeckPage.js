@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 
 function DeckPage() {
   const [expandedCardId, setExpandedCardId] = useState();
+  const { deckId } = useParams();
 
   // Sample deck data
   const deck = {
