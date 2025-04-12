@@ -221,11 +221,9 @@ function Home() {
 
   const noDeckInfo = (
     <div className="flex flex-col items-center justify-center py-16 px-4">
-      <img
-        src="https://readdy.ai/api/search-image?query=A%20minimalist%20illustration%20of%20empty%20folder%20or%20document%20state%20with%20soft%20muted%20colors%20and%20simple%20geometric%20shapes%20on%20light%20background%20professional%20modern%20design&width=200&height=200&seq=2&orientation=squarish"
-        alt="No decks"
-        className="w-48 h-48 mb-8"
-      />
+      <div className="flex flex-col items-center justify-center h-24 w-24 mb-4 text-gray-400">
+        <i className="fas fa-folder-open text-6xl"></i>
+      </div>
       <h3 className="text-xl font-semibold text-gray-800 mb-2">
         No Decks Available
       </h3>
