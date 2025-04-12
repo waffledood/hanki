@@ -170,27 +170,78 @@ function Home() {
     }
   };
 
-  const filteredDecks = decks
-    .filter(
-      (deck) =>
-        deck.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (selectedCategory === "All" || deck.category === selectedCategory)
-    )
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "dueCards":
-          return b.dueCards - a.dueCards;
-        case "lastStudied":
-          return (
-            new Date(b.lastStudied).getTime() -
-            new Date(a.lastStudied).getTime()
-          );
-        default:
-          return 0;
-      }
-    });
+  const filteredDecks = (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {decks
+        .filter(
+          (deck) =>
+            deck.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+            (selectedCategory === "All" || deck.category === selectedCategory)
+        )
+        .sort((a, b) => {
+          switch (sortBy) {
+            case "name":
+              return a.name.localeCompare(b.name);
+            case "dueCards":
+              return b.dueCards - a.dueCards;
+            case "lastStudied":
+              return (
+                new Date(b.lastStudied).getTime() -
+                new Date(a.lastStudied).getTime()
+              );
+            default:
+              return 0;
+          }
+        })
+        .map(
+          ({
+            id,
+            name,
+            totalCards,
+            dueCards,
+            lastStudied,
+            progress,
+            category,
+          }) => (
+            <Link to={`/decks/${id}`} key={id}>
+              <Deck
+                id={id}
+                name={name}
+                totalCards={totalCards}
+                dueCards={dueCards}
+                lastStudied={lastStudied}
+                progress={progress}
+                category={category}
+              />
+            </Link>
+          )
+        )}
+    </div>
+  );
+
+  const noDeckInfo = (
+    <div className="flex flex-col items-center justify-center py-16 px-4">
+      <img
+        src="https://readdy.ai/api/search-image?query=A%20minimalist%20illustration%20of%20empty%20folder%20or%20document%20state%20with%20soft%20muted%20colors%20and%20simple%20geometric%20shapes%20on%20light%20background%20professional%20modern%20design&width=200&height=200&seq=2&orientation=squarish"
+        alt="No decks"
+        className="w-48 h-48 mb-8"
+      />
+      <h3 className="text-xl font-semibold text-gray-800 mb-2">
+        No Decks Available
+      </h3>
+      <p className="text-gray-600 text-center mb-8 max-w-md">
+        You haven't created any decks yet. Start your learning journey by
+        creating your first deck!
+      </p>
+      <button
+        onClick={() => setShowCreateModal(true)}
+        className="!rounded-button bg-blue-600 text-white px-6 py-3 flex items-center space-x-2 hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap"
+      >
+        <i className="fas fa-plus"></i>
+        <span>Create Your First Deck</span>
+      </button>
+    </div>
+  );
 
   return (
     <MainLayout>
@@ -245,31 +296,7 @@ function Home() {
         </div>
 
         {/* Decks Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredDecks.map(
-            ({
-              id,
-              name,
-              totalCards,
-              dueCards,
-              lastStudied,
-              progress,
-              category,
-            }) => (
-              <Link to={`/decks/${id}`} key={id}>
-                <Deck
-                  id={id}
-                  name={name}
-                  totalCards={totalCards}
-                  dueCards={dueCards}
-                  lastStudied={lastStudied}
-                  progress={progress}
-                  category={category}
-                />
-              </Link>
-            )
-          )}
-        </div>
+        {filteredDecks.length > 0 ? filteredDecks : noDeckInfo}
       </main>
 
       {/* Create Deck Modal */}
