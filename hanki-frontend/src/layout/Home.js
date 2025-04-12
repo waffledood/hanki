@@ -235,7 +235,7 @@ function Home() {
       </p>
       <button
         onClick={() => setShowCreateModal(true)}
-        className="!rounded-button bg-blue-600 text-white px-6 py-3 flex items-center space-x-2 hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap"
+        className="!rounded-lg bg-indigo-600 text-white px-6 py-3 flex items-center space-x-2 hover:bg-indigo-700 transition-colors cursor-pointer whitespace-nowrap"
       >
         <i className="fas fa-plus"></i>
         <span>Create Your First Deck</span>
