@@ -129,8 +129,8 @@ function DeckPage() {
   );
 
   const noCardInfo = (
-    <div className="text-center py-16 bg-white rounded-lg border border-gray-200">
-      <div className="mx-auto h-24 w-24 text-gray-400 mb-4">
+    <div className="flex flex-col items-center justify-center py-16 bg-white rounded-lg border border-gray-200">
+      <div className="flex flex-col items-center justify-center h-24 w-24 mb-4 text-gray-400">
         <i className="fas fa-layer-group text-6xl"></i>
       </div>
       <h3 className="text-lg font-medium text-gray-900">No cards yet</h3>
