@@ -1,6 +1,6 @@
 // The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MainLayout from "./MainLayout";
 import Navbar from "./Navbar";
@@ -15,62 +15,77 @@ function Home() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [errors, setErrors] = useState({ name: "", description: "" });
 
-  const decks = [
-    {
-      id: 1,
-      name: "Advanced JavaScript Concepts",
-      totalCards: 245,
-      dueCards: 12,
-      lastStudied: "2025-03-22",
-      progress: 85,
-      category: "Programming",
-    },
-    {
-      id: 2,
-      name: "World History - Ancient Civilizations",
-      totalCards: 180,
-      dueCards: 25,
-      lastStudied: "2025-03-21",
-      progress: 70,
-      category: "History",
-    },
-    {
-      id: 3,
-      name: "Medical Terminology",
-      totalCards: 320,
-      dueCards: 45,
-      lastStudied: "2025-03-20",
-      progress: 60,
-      category: "Medicine",
-    },
-    {
-      id: 4,
-      name: "French Vocabulary - Advanced",
-      totalCards: 500,
-      dueCards: 30,
-      lastStudied: "2025-03-22",
-      progress: 90,
-      category: "Language",
-    },
-    {
-      id: 5,
-      name: "Organic Chemistry Fundamentals",
-      totalCards: 275,
-      dueCards: 15,
-      lastStudied: "2025-03-21",
-      progress: 75,
-      category: "Science",
-    },
-    {
-      id: 6,
-      name: "Machine Learning Algorithms",
-      totalCards: 150,
-      dueCards: 20,
-      lastStudied: "2025-03-20",
-      progress: 65,
-      category: "Programming",
-    },
-  ];
+  const [decks, setDecks] = useState([]);
+
+  useEffect(() => {
+    // fetch User's Decks
+    fetch(`http://localhost:8080/anki/decks`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to retrieve User's Decks!");
+        }
+        return res.json();
+      })
+      .then((data) => setDecks(data))
+      .catch((err) => console.error("Error:", err));
+  }, []);
+
+  // const decks = [
+  //   {
+  //     id: 1,
+  //     name: "Advanced JavaScript Concepts",
+  //     totalCards: 245,
+  //     dueCards: 12,
+  //     lastStudied: "2025-03-22",
+  //     progress: 85,
+  //     category: "Programming",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "World History - Ancient Civilizations",
+  //     totalCards: 180,
+  //     dueCards: 25,
+  //     lastStudied: "2025-03-21",
+  //     progress: 70,
+  //     category: "History",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Medical Terminology",
+  //     totalCards: 320,
+  //     dueCards: 45,
+  //     lastStudied: "2025-03-20",
+  //     progress: 60,
+  //     category: "Medicine",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "French Vocabulary - Advanced",
+  //     totalCards: 500,
+  //     dueCards: 30,
+  //     lastStudied: "2025-03-22",
+  //     progress: 90,
+  //     category: "Language",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Organic Chemistry Fundamentals",
+  //     totalCards: 275,
+  //     dueCards: 15,
+  //     lastStudied: "2025-03-21",
+  //     progress: 75,
+  //     category: "Science",
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Machine Learning Algorithms",
+  //     totalCards: 150,
+  //     dueCards: 20,
+  //     lastStudied: "2025-03-20",
+  //     progress: 65,
+  //     category: "Programming",
+  //   },
+  // ];
 
   const categories = [
     "All",
