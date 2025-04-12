@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 
 function DeckPage() {
   const [expandedCardId, setExpandedCardId] = useState();
   const { deckId } = useParams();
+  const [deckCards, setDeckCards] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:8080/anki/decks/${deckId}/cards`)
+      .then((res) => res.json())
+      .then((data) => setDeckCards(data));
+  }, [deckId]);
 
   // Sample deck data
   const deck = {
@@ -67,9 +74,9 @@ function DeckPage() {
     return text.slice(0, maxLength) + "...";
   };
 
-  const cardList = (
+  const cardsList = (
     <div className="space-y-4">
-      {cards.map((card) => (
+      {deckCards.map((card) => (
         <div
           key={card.id}
           className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-md"
@@ -190,7 +197,7 @@ function DeckPage() {
 
         {/* Card List - Scrollable Section */}
         <div className="flex-1 overflow-auto pt-2">
-          {cards.length > 0 ? cardList : noCardInfo}
+          {cardsList.length > 0 ? cardsList : noCardInfo}
         </div>
       </main>
 
