@@ -228,8 +228,9 @@ function Home() {
         No Decks Available
       </h3>
       <p className="text-gray-600 text-center mb-8 max-w-md">
-        You haven't created any decks yet. Start your learning journey by
-        creating your first deck!
+        You haven't created any decks yet.
+        <br />
+        Start your learning journey by creating your first deck!
       </p>
       <button
         onClick={() => setShowCreateModal(true)}
