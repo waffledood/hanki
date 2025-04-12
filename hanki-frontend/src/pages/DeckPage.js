@@ -9,8 +9,14 @@ function DeckPage() {
 
   useEffect(() => {
     fetch(`http://localhost:8080/anki/decks/${deckId}/cards`)
-      .then((res) => res.json())
-      .then((data) => setDeckCards(data));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to retrieve Cards from User's Decks");
+        }
+        return res.json();
+      })
+      .then((data) => setDeckCards(data))
+      .catch((err) => console.error("Error:", err));
   }, [deckId]);
 
   // Sample deck data
