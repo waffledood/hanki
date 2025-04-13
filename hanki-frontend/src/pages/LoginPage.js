@@ -149,15 +149,6 @@ function LoginPage() {
           </p>
         </div>
       </div>
-
-      {/* Background Image */}
-      <div className="fixed left-0 top-0 right-0 opacity-10 pointer-events-none">
-        <img
-          src="https://readdy.ai/api/search-image?query=abstract%20geometric%20pattern%20with%20soft%20gradient%20colors%20in%20light%20blue%20and%20purple%2C%20minimalist%20design%20with%20clean%20lines%2C%20perfect%20for%20modern%20app%20background%2C%20professional%20and%20elegant%20style&width=600&height=600&seq=bg001&orientation=squarish"
-          alt=""
-          className="w-full h-full object-cover"
-        />
-      </div>
     </div>
   );
 }
