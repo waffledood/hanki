@@ -13,17 +13,11 @@ function LoginPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        {/* Logo with subtle animation */}
-        <div className="flex justify-center mb-12 animate-fade-in">
-          <div className="text-4xl font-bold text-indigo-600 tracking-tight">
-            <span className="text-5xl">H</span>anki
-          </div>
-        </div>
-
         {/* Login Form */}
         <div className="bg-white rounded-xl shadow-md p-8 mb-8">
+          {/* Sign in banner */}
           <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-            Welcome Back
+            Sign in to <span className="text-indigo-600">Hanki</span>
           </h2>
 
           <form onSubmit={handleSubmit}>
