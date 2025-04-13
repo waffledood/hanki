@@ -35,17 +35,21 @@ function RegisterPage() {
             <div className="space-y-3">
               <button
                 type="button"
-                className="!rounded-button whitespace-nowrap w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer"
+                className="flex items-center justify-center whitespace-nowrap w-full py-3 px-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 cursor-pointer"
               >
-                <i className="fab fa-google text-lg mr-2"></i>
-                Continue with Google
+                <i className="fab fa-google text-red-500 mr-2"></i>
+                <span className="text-sm font-medium text-gray-700">
+                  Continue with Google
+                </span>
               </button>
               <button
                 type="button"
-                className="!rounded-button whitespace-nowrap w-full inline-flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer"
+                className="flex items-center justify-center whitespace-nowrap w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50 cursor-pointer"
               >
-                <i className="fab fa-apple text-lg mr-2"></i>
-                Continue with Apple
+                <i className="fab fa-apple text-gray-800 mr-2"></i>
+                <span className="text-sm font-medium text-gray-700">
+                  Continue with Apple
+                </span>
               </button>
             </div>
 
