@@ -24,24 +24,13 @@ function RegisterPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        {/* Logo with subtle animation */}
-        <div className="flex justify-center mb-12 animate-fade-in">
-          <div className="text-4xl font-bold text-indigo-600 tracking-tight">
-            <span className="text-5xl">H</span>anki
-          </div>
-        </div>
-
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900">Sign Up</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              Create your account and start learning with Hanki
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            {/* Sign up banner */}
+            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+              Sign up to <span className="text-indigo-600">Hanki</span>
+            </h2>
+
             {/* Social Media Login Buttons */}
             <div className="space-y-3">
               <button
