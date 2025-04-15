@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -199,12 +200,12 @@ function RegisterPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Already have an account?{" "}
-                <a
-                  href="#"
+                <Link
+                  to="/login"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   Sign In
-                </a>
+                </Link>
               </p>
             </div>
           </div>
