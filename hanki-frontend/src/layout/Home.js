@@ -1,10 +1,10 @@
-// The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MainLayout from "./MainLayout";
 import Navbar from "./Navbar";
 import Deck from "../components/Deck";
+
+import { apiRequest } from "../utils/fetch";
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,14 +19,17 @@ function Home() {
 
   useEffect(() => {
     // fetch User's Decks
-    fetch(`http://localhost:8080/anki/decks`)
+    apiRequest("decks", "GET")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to retrieve User's Decks!");
         }
         return res.json();
       })
-      .then((data) => setDecks(data))
+      .then((data) => {
+        console.log("data:", data);
+        setDecks(data);
+      })
       .catch((err) => console.error("Error:", err));
   }, []);
 
