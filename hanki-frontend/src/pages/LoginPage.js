@@ -1,14 +1,28 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic here
+
+    fetch("http://localhost:8080/anki/users/register")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to register User");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data.success);
+        navigate("/");
+      })
+      .catch((err) => console.error("Error:", err));
   };
 
   return (
