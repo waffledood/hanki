@@ -26,6 +26,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(Customizer.withDefaults())
                 // disable CSRF
                 .csrf(customizer -> customizer.disable())
                 // TODO - Update the exact endpoint(s) that don't require auth
