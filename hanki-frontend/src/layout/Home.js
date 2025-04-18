@@ -298,7 +298,31 @@ function Home() {
         </div>
 
         {/* Decks Grid */}
-        {filteredDecks.length > 0 ? filteredDecks : noDeckInfo}
+        {decks.length > 0
+          ? decks.map(
+              ({
+                id,
+                name,
+                totalCards,
+                dueCards,
+                lastStudied,
+                progress,
+                category,
+              }) => (
+                <Link to={`/decks/${id}`} key={id}>
+                  <Deck
+                    id={id}
+                    name={name}
+                    totalCards={totalCards}
+                    dueCards={dueCards}
+                    lastStudied={lastStudied}
+                    progress={progress}
+                    category={category}
+                  />
+                </Link>
+              )
+            )
+          : noDeckInfo}
       </main>
 
       {/* Create Deck Modal */}
