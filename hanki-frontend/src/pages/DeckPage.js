@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 
+import { apiRequest } from "../utils/fetch";
+
 function DeckPage() {
   const [expandedCardId, setExpandedCardId] = useState();
   const { deckId } = useParams();
   const [deckCards, setDeckCards] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/anki/decks/${deckId}/cards`)
+    apiRequest(`decks/${deckId}/cards`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to retrieve Cards from User's Decks");
