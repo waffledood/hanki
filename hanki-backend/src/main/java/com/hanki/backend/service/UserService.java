@@ -21,6 +21,8 @@ public class UserService {
         user.setPassword(encoder.encode(userPostDto.getPassword()));
         user.setEmail(userPostDto.getEmail());
 
+        // TODO - check for presence of combination of username & password
+
         return userRepository.save(user);
     }
 
