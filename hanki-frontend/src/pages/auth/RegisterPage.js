@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import { apiRequest } from "../../utils/fetch";
 
 function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -7,6 +9,8 @@ function RegisterPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
+
+  const navigate = useNavigate();
 
   const getPasswordStrength = (password) => {
     if (!password) return 0;
@@ -22,6 +26,27 @@ function RegisterPage() {
   };
 
   const passwordStrength = getPasswordStrength(password);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    apiRequest("users/register", "POST", {
+      email: email,
+      username: username,
+      password: password,
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to register User");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        navigate("/");
+      })
+      .catch((err) => console.error("Error:", err));
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
@@ -65,7 +90,8 @@ function RegisterPage() {
             </div>
 
             {/* Main Form */}
-            <form className="mt-6 space-y-6">
+            <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
+              {/* Email div */}
               <div>
                 <label
                   htmlFor="email"
