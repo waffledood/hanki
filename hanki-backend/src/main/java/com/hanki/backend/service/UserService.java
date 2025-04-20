@@ -28,13 +28,18 @@ public class UserService {
 
     public User loginUser(UserPostDto userPostDto) {
         try {
-            User user = userRepository.findByEmailAndPassword(userPostDto.getEmail(), userPostDto.getPassword());
+            User user = userRepository.findByEmail(userPostDto.getEmail());
 
             if (user == null) {
+                // logger.info("User doesn't exist in database");
+                return null;
+            }
+
+            if (encoder.matches(userPostDto.getPassword(), user.getPassword())) {
+                return user;
+            } else {
                 // logger.info("Invalid credentials.");
                 return null;
-            } else {
-                return user;
             }
         } catch (IllegalArgumentException e) {
             // logger.err(e.getMessage());
