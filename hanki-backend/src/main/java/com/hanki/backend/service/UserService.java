@@ -26,6 +26,23 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User loginUser(UserPostDto userPostDto) {
+        try {
+            User user = userRepository.findByEmailAndPassword(userPostDto.getEmail(), userPostDto.getPassword());
+
+            if (user == null) {
+                // logger.info("Invalid credentials.");
+                return null;
+            } else {
+                return user;
+            }
+        } catch (IllegalArgumentException e) {
+            // logger.err(e.getMessage());
+            return null;
+        }
+
+    }
+
     public PasswordEncoder getEncoder() {
         return this.encoder;
     }

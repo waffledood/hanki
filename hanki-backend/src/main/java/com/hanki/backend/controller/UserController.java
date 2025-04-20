@@ -28,4 +28,17 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDto> loginUser(@Valid @RequestBody UserPostDto userPostDto) {
+        User user = userService.loginUser(userPostDto);
+
+        if (user != null) {
+            UserResponseDto userResponseDto = new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
 }
