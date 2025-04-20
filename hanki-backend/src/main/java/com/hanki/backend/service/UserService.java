@@ -1,5 +1,6 @@
 package com.hanki.backend.service;
 
+import com.hanki.backend.dto.UserLoginDto;
 import com.hanki.backend.dto.UserPostDto;
 import com.hanki.backend.model.User;
 import com.hanki.backend.repository.UserRepository;
@@ -26,16 +27,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User loginUser(UserPostDto userPostDto) {
+    public User loginUser(UserLoginDto userLoginDto) {
         try {
-            User user = userRepository.findByEmail(userPostDto.getEmail());
+            User user = userRepository.findByEmail(userLoginDto.getEmail());
 
             if (user == null) {
                 // logger.info("User doesn't exist in database");
                 return null;
             }
 
-            if (encoder.matches(userPostDto.getPassword(), user.getPassword())) {
+            if (encoder.matches(userLoginDto.getPassword(), user.getPassword())) {
                 return user;
             } else {
                 // logger.info("Invalid credentials.");
