@@ -43,6 +43,8 @@ function RegisterPage() {
       })
       .then((data) => {
         console.log(data);
+
+        // Redirect to Home page on successful registration
         navigate("/");
       })
       .catch((err) => console.error("Error:", err));
