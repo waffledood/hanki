@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { apiRequest } from "../utils/fetch";
+
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,10 +13,13 @@ function LoginPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:8080/anki/users/register")
+    apiRequest("users/login", "POST", {
+      email: email,
+      password: password,
+    })
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Failed to register User");
+          throw new Error("Failed to login User");
         }
         return res.json();
       })
