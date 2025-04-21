@@ -64,7 +64,11 @@ function RegisterPage() {
           // Redirect to Home page on successful registration
           navigate("/");
         })
-        .catch((err) => console.error("Error:", err));
+        .catch((err) => {
+          console.error("Error:", err);
+
+          // TODO - Update errors state for any errors relating to email & username fields
+        });
     }
   };
 
