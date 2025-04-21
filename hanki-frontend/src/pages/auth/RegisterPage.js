@@ -39,6 +39,10 @@ function RegisterPage() {
       newErrors.email = "Please enter a valid email address";
     }
 
+    if (!username) {
+      newErrors.username = "Please enter a username";
+    }
+
     setErrors(newErrors);
 
     // Send POST request when all required fields are present
@@ -66,6 +70,10 @@ function RegisterPage() {
 
   const errorEmailWarning = (
     <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+  );
+
+  const errorUsernameWarning = (
+    <p className="mt-1 text-xs text-red-500">{errors.username}</p>
   );
 
   return (
@@ -154,10 +162,13 @@ function RegisterPage() {
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                    className={`appearance-none block w-full px-3 py-3 border ${
+                      errors.username ? "border-red-500" : "border-gray-300"
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm`}
                     placeholder="Enter your username"
                   />
                 </div>
+                {errors.username && errorUsernameWarning}
               </div>
 
               {/* Password div */}
