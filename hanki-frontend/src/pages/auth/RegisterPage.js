@@ -9,7 +9,7 @@ function RegisterPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
 
-  const [error, setErrors] = useState({});
+  const [errors, setErrors] = useState({});
   const [agreeTerms, setAgreeTerms] = useState(false);
 
   const navigate = useNavigate();
@@ -32,25 +32,41 @@ function RegisterPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    apiRequest("users/register", "POST", {
-      email: email,
-      username: username,
-      password: password,
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to register User");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
+    // Validate input fields
+    let newErrors = {};
 
-        // Redirect to Home page on successful registration
-        navigate("/");
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    setErrors(newErrors);
+
+    // Send POST request when all required fields are present
+    if (Object.keys(newErrors).length === 0) {
+      apiRequest("users/register", "POST", {
+        email: email,
+        username: username,
+        password: password,
       })
-      .catch((err) => console.error("Error:", err));
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Failed to register User");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+
+          // Redirect to Home page on successful registration
+          navigate("/");
+        })
+        .catch((err) => console.error("Error:", err));
+    }
   };
+
+  const errorEmailWarning = (
+    <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+  );
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
@@ -112,9 +128,12 @@ function RegisterPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                    className={`appearance-none block w-full px-3 py-3 border ${
+                      errors.email ? "border-red-500" : "border-gray-300"
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm`}
                     placeholder="Enter your email"
                   />
+                  {errors.email && errorEmailWarning}
                 </div>
               </div>
 
