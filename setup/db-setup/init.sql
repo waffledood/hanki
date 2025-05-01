@@ -1,21 +1,25 @@
 -- Creation of deck table
 
-CREATE TABLE deck (
+CREATE TABLE decks (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  description TEXT NOT NULL
+  name VARCHAR(64) NOT NULL,
+  description TEXT NOT NULL,
+  user_id INT NOT NULL,
+  CONSTRAINT fk_decks_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Creation of card table
 
-CREATE TABLE card (
+CREATE TABLE cards (
     id SERIAL PRIMARY KEY,
-    front_text TEXT NOT NULL,
-    back_text TEXT NOT NULL,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
     deck_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW(),
-    CONSTRAINT fk_card_deck FOREIGN KEY (deck_id) REFERENCES deck(id) ON DELETE CASCADE
+    user_id INT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    CONSTRAINT fk_cards_decks FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE,
+    CONSTRAINT fk_cards_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Creation of users table
