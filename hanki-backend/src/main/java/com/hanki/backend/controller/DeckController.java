@@ -35,7 +35,7 @@ public class DeckController {
     public ResponseEntity<Deck> createDeck(@Valid @RequestBody DeckPostDto deckPostDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Retrieve user details
+        // TODO - Abstract out retrieval user details as a common method
         if (authentication != null && authentication.isAuthenticated()) {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
             User user = userPrincipal.getUser();
