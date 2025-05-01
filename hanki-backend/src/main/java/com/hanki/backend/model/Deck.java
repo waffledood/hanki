@@ -3,18 +3,22 @@ package com.hanki.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "deck")
+@Table(name = "decks")
 public class Deck {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 255, nullable = false) // Matches VARCHAR(255), nullable based on requirements
+    @Column(length = 64, nullable = false) // Matches VARCHAR(255), nullable based on requirements
     private String name;
 
     @Column(columnDefinition = "TEXT", nullable = false) // Matches TEXT in PostgreSQL
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_decks_users"))
+    private User user;
 
     public Integer getId() {
         return id;
