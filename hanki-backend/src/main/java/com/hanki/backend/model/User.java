@@ -1,18 +1,20 @@
 package com.hanki.backend.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(columnDefinition = "uuid", updatable = false, insertable = false, nullable = false)
+    private UUID uuid;
 
     @Column(nullable = false, unique = true, length = 50)
     private String username;
