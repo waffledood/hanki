@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -52,7 +51,7 @@ public class DeckControllerTest {
             User user = new User();
             user.setUsername("testuser");
             user.setEmail("test@email.com");
-            user.setPassword(new BCryptPasswordEncoder().encode("password"));
+            user.setPassword(userService.getEncoder().encode("password"));
             user.setRole("USER");
             userRepository.save(user);
         }
