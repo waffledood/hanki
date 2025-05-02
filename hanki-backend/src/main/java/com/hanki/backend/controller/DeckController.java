@@ -9,8 +9,7 @@ import com.hanki.backend.service.DeckService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -32,20 +31,13 @@ public class DeckController {
     }
 
     @PostMapping
-    public ResponseEntity<Deck> createDeck(@Valid @RequestBody DeckPostDto deckPostDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<Deck> createDeck(@Valid @RequestBody DeckPostDto deckPostDto,
+                                           @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        User user = userPrincipal.getUser();
 
-        // TODO - Abstract out retrieval user details as a common method
-        if (authentication != null && authentication.isAuthenticated()) {
-            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-            User user = userPrincipal.getUser();
+        Deck deck = deckService.createDeck(deckPostDto, user);
 
-            Deck deck = deckService.createDeck(deckPostDto, user);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(deck);
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        return ResponseEntity.status(HttpStatus.CREATED).body(deck);
     }
 
     @GetMapping("/{id}")
