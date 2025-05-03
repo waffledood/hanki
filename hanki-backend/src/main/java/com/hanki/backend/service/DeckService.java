@@ -35,6 +35,11 @@ public class DeckService {
     }
 
     @Transactional
+    public Iterable<Deck> findDecksOwnedBy(User user) {
+        return deckRepository.findByOwner(user);
+    }
+
+    @Transactional
     public Optional<Deck> findById(Integer id) {
         return deckRepository.findById(id);
     }
@@ -44,7 +49,7 @@ public class DeckService {
         Deck deck = new Deck();
         deck.setName(deckPostDto.getName());
         deck.setDescription(deckPostDto.getDescription());
-        deck.setUser(user);
+        deck.setOwner(user);
 
         return deckRepository.save(deck);
     }

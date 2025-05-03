@@ -44,11 +44,11 @@ public class Deck {
         this.description = description;
     }
 
-    public User getUser() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setUser(User owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 

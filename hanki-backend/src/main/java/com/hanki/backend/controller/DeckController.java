@@ -26,8 +26,10 @@ public class DeckController {
     }
 
     @GetMapping
-    public Iterable<Deck> getAllDecks() {
-        return deckService.findAll();
+    public Iterable<Deck> getAllDecks(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        User user = userPrincipal.getUser();
+
+        return deckService.findDecksOwnedBy(user);
     }
 
     @PostMapping
