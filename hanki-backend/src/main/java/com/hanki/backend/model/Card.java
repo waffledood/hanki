@@ -1,35 +1,41 @@
 package com.hanki.backend.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Entity
-@Table(name = "card")
+@Table(name = "cards")
 public class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "front_text", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "question", nullable = false, columnDefinition = "TEXT")
     private String frontText;
 
-    @Column(name = "back_text", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
     private String backText;
 
     @ManyToOne
-    @JoinColumn(name = "deck_id", nullable = false, foreignKey = @ForeignKey(name = "fk_card_deck"))
+    @JoinColumn(name = "deck_id", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_decks"))
     private Deck deck;
 
+    @ManyToOne
+    @JoinColumn(name = "owner", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_users"))
+    private User owner;
+
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private OffsetDateTime createdAt = OffsetDateTime.now(ZoneOffset.UTC);
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private OffsetDateTime updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
     }
 
     public Integer getId() {
@@ -64,19 +70,27 @@ public class Card {
         this.deck = deck;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public User getUser() {
+        return owner;
+    }
+
+    public void setUser(User owner) {
+        this.owner = owner;
+    }
+
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
+    public OffsetDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

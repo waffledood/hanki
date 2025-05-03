@@ -1,18 +1,21 @@
 package com.hanki.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(columnDefinition = "uuid", updatable = false, insertable = false, nullable = false)
+    private UUID uuid;
 
     @Column(nullable = false, unique = true, length = 50)
     private String username;
@@ -20,15 +23,40 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
-    public String getId() {
+    @JsonIgnore
+    @Column(nullable = false, length = 20)
+    private String role = "USER"; // Default role
+
+    @JsonIgnore
+    @Column(nullable = false)
+    private Boolean enabled = true;
+
+    @JsonIgnore
+    @Column(name = "created_at", columnDefinition = "TIMESTAMPTZ DEFAULT NOW()", insertable = false, updatable = false)
+    private Instant createdAt = Instant.now();
+
+    @JsonIgnore
+    @Column(name = "updated_at", columnDefinition = "TIMESTAMPTZ DEFAULT NOW()", insertable = false)
+    private Instant updatedAt = Instant.now();
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getUsername() {
@@ -86,15 +114,4 @@ public class User {
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    @Column(nullable = false, length = 20)
-    private String role = "USER"; // Default role
-
-    @Column(nullable = false)
-    private Boolean enabled = true;
-
-    @Column(updatable = false)
-    private Instant createdAt = Instant.now();
-
-    private Instant updatedAt = Instant.now();
 }

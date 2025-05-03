@@ -2,23 +2,23 @@ package com.hanki.backend.dto;
 
 public class UserResponseDto {
 
-    private String id;
+    private Integer id;
 
     private String username;
 
     private String email;
 
-    public UserResponseDto(String id, String username, String email) {
+    public UserResponseDto(Integer id, String username, String email) {
         this.id = id;
         this.username = username;
         this.email = email;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

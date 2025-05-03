@@ -2,6 +2,7 @@ package com.hanki.backend.service;
 
 import com.hanki.backend.dto.DeckPostDto;
 import com.hanki.backend.model.Deck;
+import com.hanki.backend.model.User;
 import com.hanki.backend.repository.DeckRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -34,15 +35,21 @@ public class DeckService {
     }
 
     @Transactional
+    public Iterable<Deck> findDecksOwnedBy(User user) {
+        return deckRepository.findByOwner(user);
+    }
+
+    @Transactional
     public Optional<Deck> findById(Integer id) {
         return deckRepository.findById(id);
     }
 
     @Transactional
-    public Deck createDeck(DeckPostDto deckPostDto) {
+    public Deck createDeck(DeckPostDto deckPostDto, User user) {
         Deck deck = new Deck();
         deck.setName(deckPostDto.getName());
         deck.setDescription(deckPostDto.getDescription());
+        deck.setOwner(user);
 
         return deckRepository.save(deck);
     }

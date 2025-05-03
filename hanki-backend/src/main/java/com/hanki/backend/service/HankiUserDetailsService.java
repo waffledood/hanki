@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("HankiUserDetailsService")
 public class HankiUserDetailsService implements UserDetailsService {
 
     @Autowired
@@ -22,7 +22,7 @@ public class HankiUserDetailsService implements UserDetailsService {
         if (user == null) {
             // TODO - Implement logging
             System.out.println("User Not Found");
-            throw new UsernameNotFoundException("user not found");
+            throw new UsernameNotFoundException("User not found");
         }
 
         return new UserPrincipal(user);

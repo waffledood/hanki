@@ -3,10 +3,13 @@ package com.hanki.backend.controller;
 import com.hanki.backend.dto.DeckPostDto;
 import com.hanki.backend.exception.DeckNotFoundException;
 import com.hanki.backend.model.Deck;
+import com.hanki.backend.model.User;
+import com.hanki.backend.model.UserPrincipal;
 import com.hanki.backend.service.DeckService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,13 +26,18 @@ public class DeckController {
     }
 
     @GetMapping
-    public Iterable<Deck> getAllDecks() {
-        return deckService.findAll();
+    public Iterable<Deck> getAllDecks(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        User user = userPrincipal.getUser();
+
+        return deckService.findDecksOwnedBy(user);
     }
 
     @PostMapping
-    public ResponseEntity<Deck> createDeck(@Valid @RequestBody DeckPostDto deckPostDto) {
-        Deck deck = deckService.createDeck(deckPostDto);
+    public ResponseEntity<Deck> createDeck(@Valid @RequestBody DeckPostDto deckPostDto,
+                                           @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        User user = userPrincipal.getUser();
+
+        Deck deck = deckService.createDeck(deckPostDto, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(deck);
     }

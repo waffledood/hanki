@@ -1,5 +1,6 @@
 package com.hanki.backend.controller;
 
+import com.hanki.backend.dto.UserLoginDto;
 import com.hanki.backend.dto.UserPostDto;
 import com.hanki.backend.dto.UserResponseDto;
 import com.hanki.backend.model.User;
@@ -27,5 +28,18 @@ public class UserController {
         UserResponseDto userResponseDto = new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDto> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
+        User user = userService.loginUser(userLoginDto);
+
+        if (user != null) {
+            UserResponseDto userResponseDto = new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
     }
 }
