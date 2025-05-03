@@ -24,8 +24,8 @@ public class Card {
     private Deck deck;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_users"))
-    private User user;
+    @JoinColumn(name = "owner", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_users"))
+    private User owner;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt = OffsetDateTime.now(ZoneOffset.UTC);
@@ -71,11 +71,11 @@ public class Card {
     }
 
     public User getUser() {
-        return user;
+        return owner;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(User owner) {
+        this.owner = owner;
     }
 
     public OffsetDateTime getCreatedAt() {

@@ -17,8 +17,8 @@ public class Deck {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_decks_users"))
-    private User user;
+    @JoinColumn(name = "owner_id", nullable = false, foreignKey = @ForeignKey(name = "fk_decks_users"))
+    private User owner;
 
     public Integer getId() {
         return id;
@@ -45,11 +45,11 @@ public class Deck {
     }
 
     public User getUser() {
-        return user;
+        return owner;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(User owner) {
+        this.owner = owner;
     }
 
     public Deck() {}

@@ -12,26 +12,26 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Creation of deck table
+-- Creation of decks table
 
 CREATE TABLE IF NOT EXISTS decks (
   id SERIAL PRIMARY KEY,
   name VARCHAR(64) NOT NULL,
   description TEXT NOT NULL,
-  user_id INT NOT NULL,
-  CONSTRAINT fk_decks_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  owner_id INT NOT NULL,
+  CONSTRAINT fk_decks_users FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Creation of card table
+-- Creation of cards table
 
 CREATE TABLE IF NOT EXISTS cards (
     id SERIAL PRIMARY KEY,
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     deck_id INT NOT NULL,
-    user_id INT NOT NULL,
+    owner_id INT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     CONSTRAINT fk_cards_decks FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE,
-    CONSTRAINT fk_cards_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_cards_users FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
