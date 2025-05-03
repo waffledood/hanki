@@ -22,7 +22,7 @@ public class HankiUserDetailsService implements UserDetailsService {
         if (user == null) {
             // TODO - Implement logging
             System.out.println("User Not Found");
-            throw new UsernameNotFoundException("user not found");
+            throw new UsernameNotFoundException("User not found");
         }
 
         return new UserPrincipal(user);

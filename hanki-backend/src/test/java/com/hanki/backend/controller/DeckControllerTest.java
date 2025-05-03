@@ -7,7 +7,7 @@ import com.hanki.backend.model.User;
 import com.hanki.backend.repository.UserRepository;
 import com.hanki.backend.service.DeckService;
 import com.hanki.backend.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -45,8 +45,9 @@ public class DeckControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    @BeforeEach
-    public void setupUser() {
+    @BeforeAll
+    public static void setup(@Autowired UserRepository userRepository, @Autowired UserService userService) {
+        // create a sample user
         if (userRepository.findByUsername("testuser") == null) {
             User user = new User();
             user.setUsername("testuser");
@@ -58,7 +59,7 @@ public class DeckControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithUserDetails(value = "testuser", userDetailsServiceBeanName = "HankiUserDetailsService")
     public void testGetAllDecks() throws Exception {
         mockMvc.perform(get("/decks"))
                 .andExpect(status().isOk())
