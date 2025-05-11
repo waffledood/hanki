@@ -12,15 +12,15 @@ function DeckPage() {
   useEffect(() => {
     apiRequest(`decks/${deckId}/cards`)
       .then((res) => {
-        if (!res.ok) {
-          if (res.status === 404) {
+        switch (res.status) {
+          case 200:
+            return res.json();
+          case 404:
             setDeckCards([]);
             throw new Error(`No cards in Deck ${deckId}`);
-          } else {
+          default:
             throw new Error(`Failed to retrieve Cards from Deck ${deckId}`);
-          }
         }
-        return res.json();
       })
       .then((data) => setDeckCards(data))
       .catch((err) => console.error("Error:", err));
