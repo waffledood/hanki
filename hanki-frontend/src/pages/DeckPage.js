@@ -13,7 +13,12 @@ function DeckPage() {
     apiRequest(`decks/${deckId}/cards`)
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Failed to retrieve Cards from User's Decks");
+          if (res.status === 404) {
+            setDeckCards([]);
+            throw new Error(`No cards in Deck ${deckId}`);
+          } else {
+            throw new Error(`Failed to retrieve Cards from Deck ${deckId}`);
+          }
         }
         return res.json();
       })
