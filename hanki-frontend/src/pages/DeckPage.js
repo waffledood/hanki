@@ -10,11 +10,10 @@ function DeckPage() {
   const [deckDetails, setDeckDetails] = useState({});
   const [deckCards, setDeckCards] = useState([]);
 
+  // modal & form for new Card creation
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newCardFormData, setNewCardFormData] = useState({
-    question: "",
-    answer: "",
-  });
+  const [newCardQuestion, setNewCardQuestion] = useState("");
+  const [newCardAnswer, setNewCardAnswer] = useState("");
 
   useEffect(() => {
     // fetch details of the specified Deck
@@ -36,6 +35,7 @@ function DeckPage() {
         switch (res.status) {
           case 200:
             return res.json();
+          // TODO - Fix! This is incorrect
           case 404:
             console.log(`No Cards in Deck ${deckId}`);
             return [];
@@ -47,12 +47,36 @@ function DeckPage() {
       .catch((err) => console.error("Error:", err));
   }, [deckId]);
 
+  const clearNewCardModal = () => {
+    setIsModalOpen(false);
+    setNewCardQuestion("");
+    setNewCardAnswer("");
+  };
+
   const handleCreateCard = () => {
     // TODO - Handle the card creation
-    console.log("New card:", newCardFormData);
+    apiRequest("cards", "POST", {
+      question: newCardQuestion,
+      answer: newCardAnswer,
+      deckId: deckId,
+    })
+      .then((res) => {
+        switch (res.status) {
+          case 201:
+            return res.json();
+          default:
+            throw new Error("Failed to create new Card");
+        }
+      })
+      .then((newCard) => {
+        console.log("New Card:", newCard);
 
-    setIsModalOpen(false);
-    setNewCardFormData({ question: "", answer: "" });
+        // add new Card to existing list of Cards
+        setDeckCards((prevDeckCards) => [...prevDeckCards, newCard]);
+      })
+      .catch((err) => console.error("Error:", err));
+
+    clearNewCardModal();
   };
 
   // Sample deck data
@@ -268,8 +292,7 @@ function DeckPage() {
               </h3>
               <button
                 onClick={() => {
-                  setIsModalOpen(false);
-                  setNewCardFormData({ question: "", answer: "" });
+                  clearNewCardModal();
                 }}
                 className="text-gray-400 hover:text-gray-500 !rounded-button whitespace-nowrap"
               >
@@ -289,13 +312,8 @@ function DeckPage() {
                   id="question"
                   className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto"
                   placeholder="Enter your question"
-                  value={newCardFormData.question}
-                  onChange={(e) =>
-                    setNewCardFormData((prev) => ({
-                      ...prev,
-                      question: e.target.value,
-                    }))
-                  }
+                  value={newCardQuestion}
+                  onChange={(e) => setNewCardQuestion(e.target.value)}
                 />
               </div>
 
@@ -310,13 +328,8 @@ function DeckPage() {
                   id="answer"
                   className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto"
                   placeholder="Enter your answer"
-                  value={newCardFormData.answer}
-                  onChange={(e) =>
-                    setNewCardFormData((prev) => ({
-                      ...prev,
-                      answer: e.target.value,
-                    }))
-                  }
+                  value={newCardAnswer}
+                  onChange={(e) => setNewCardAnswer(e.target.value)}
                 />
               </div>
             </div>
@@ -324,8 +337,7 @@ function DeckPage() {
             <div className="px-6 py-4 bg-gray-50 flex justify-end gap-3">
               <button
                 onClick={() => {
-                  setIsModalOpen(false);
-                  setNewCardFormData({ question: "", answer: "" });
+                  clearNewCardModal();
                 }}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 !rounded-button whitespace-nowrap"
               >
@@ -334,10 +346,7 @@ function DeckPage() {
               <button
                 onClick={() => handleCreateCard()}
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed !rounded-button whitespace-nowrap cursor-pointer"
-                disabled={
-                  !newCardFormData.question.trim() ||
-                  !newCardFormData.answer.trim()
-                }
+                disabled={!newCardQuestion.trim() || !newCardAnswer.trim()}
               >
                 Add Card
               </button>
