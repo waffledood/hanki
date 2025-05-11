@@ -331,7 +331,7 @@ function DeckPage() {
                   setIsModalOpen(false);
                   setNewCardFormData({ question: "", answer: "" });
                 }}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 !rounded-button whitespace-nowrap cursor-pointer"
+                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed !rounded-button whitespace-nowrap cursor-pointer"
                 disabled={
                   !newCardFormData.question.trim() ||
                   !newCardFormData.answer.trim()
