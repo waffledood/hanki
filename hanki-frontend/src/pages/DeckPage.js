@@ -47,6 +47,14 @@ function DeckPage() {
       .catch((err) => console.error("Error:", err));
   }, [deckId]);
 
+  const handleCreateCard = () => {
+    // TODO - Handle the card creation
+    console.log("New card:", newCardFormData);
+
+    setIsModalOpen(false);
+    setNewCardFormData({ question: "", answer: "" });
+  };
+
   // Sample deck data
   const deck = {
     name: "Advanced JavaScript Concepts",
@@ -324,13 +332,7 @@ function DeckPage() {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  // TODO - Handle the card creation
-                  console.log("New card:", newCardFormData);
-
-                  setIsModalOpen(false);
-                  setNewCardFormData({ question: "", answer: "" });
-                }}
+                onClick={() => handleCreateCard()}
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed !rounded-button whitespace-nowrap cursor-pointer"
                 disabled={
                   !newCardFormData.question.trim() ||
