@@ -167,55 +167,6 @@ function Home() {
     }
   };
 
-  const filteredDecks = (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {decks
-        .filter(
-          (deck) =>
-            deck.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            (selectedCategory === "All" || deck.category === selectedCategory)
-        )
-        .sort((a, b) => {
-          switch (sortBy) {
-            case "name":
-              return a.name.localeCompare(b.name);
-            case "dueCards":
-              return b.dueCards - a.dueCards;
-            case "lastStudied":
-              return (
-                new Date(b.lastStudied).getTime() -
-                new Date(a.lastStudied).getTime()
-              );
-            default:
-              return 0;
-          }
-        })
-        .map(
-          ({
-            id,
-            name,
-            totalCards,
-            dueCards,
-            lastStudied,
-            progress,
-            category,
-          }) => (
-            <Link to={`/decks/${id}`} key={id}>
-              <Deck
-                id={id}
-                name={name}
-                totalCards={totalCards}
-                dueCards={dueCards}
-                lastStudied={lastStudied}
-                progress={progress}
-                category={category}
-              />
-            </Link>
-          )
-        )}
-    </div>
-  );
-
   const noDeckInfo = (
     <div className="flex flex-col items-center justify-center py-16 px-4">
       <div className="flex flex-col items-center justify-center h-24 w-24 mb-4 text-gray-400">
@@ -242,29 +193,50 @@ function Home() {
   const renderDeckGrid = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {decks.map(
-          ({
-            id,
-            name,
-            totalCards,
-            dueCards,
-            lastStudied,
-            progress,
-            category,
-          }) => (
-            <Link to={`/decks/${id}`} key={id}>
-              <Deck
-                id={id}
-                name={name}
-                totalCards={totalCards}
-                dueCards={dueCards}
-                lastStudied={lastStudied}
-                progress={progress}
-                category={category}
-              />
-            </Link>
+        {decks
+          .filter(
+            (deck) =>
+              deck.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+              (selectedCategory === "All" || deck.category === selectedCategory)
           )
-        )}
+          .sort((a, b) => {
+            switch (sortBy) {
+              case "name":
+                return a.name.localeCompare(b.name);
+              case "dueCards":
+                return b.dueCards - a.dueCards;
+              case "lastStudied":
+                return (
+                  new Date(b.lastStudied).getTime() -
+                  new Date(a.lastStudied).getTime()
+                );
+              default:
+                return 0;
+            }
+          })
+          .map(
+            ({
+              id,
+              name,
+              totalCards,
+              dueCards,
+              lastStudied,
+              progress,
+              category,
+            }) => (
+              <Link to={`/decks/${id}`} key={id}>
+                <Deck
+                  id={id}
+                  name={name}
+                  totalCards={totalCards}
+                  dueCards={dueCards}
+                  lastStudied={lastStudied}
+                  progress={progress}
+                  category={category}
+                />
+              </Link>
+            )
+          )}
       </div>
     );
   };
