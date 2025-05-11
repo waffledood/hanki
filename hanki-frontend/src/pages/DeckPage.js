@@ -7,9 +7,24 @@ import { apiRequest } from "../utils/fetch";
 function DeckPage() {
   const [expandedCardId, setExpandedCardId] = useState();
   const { deckId } = useParams();
+  const [deckDetails, setDeckDetails] = useState({});
   const [deckCards, setDeckCards] = useState([]);
 
   useEffect(() => {
+    // fetch details of the specified Deck
+    apiRequest(`decks/${deckId}`)
+      .then((res) => {
+        switch (res.status) {
+          case 200:
+            return res.json();
+          default:
+            throw new Error(`Failed to retrieve details of Deck ${deckId}`);
+        }
+      })
+      .then((data) => setDeckDetails(data))
+      .catch((err) => console.error("Error:", err));
+
+    // fetch cards for the specified Deck
     apiRequest(`decks/${deckId}/cards`)
       .then((res) => {
         switch (res.status) {
@@ -179,11 +194,13 @@ function DeckPage() {
         {/* Deck Information - Fixed/Floating Section */}
         <div className="sticky top-16 bg-gray-50 pt-4 pb-6 z-9">
           <div className="mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">{deck.name}</h1>
-            <p className="mt-2 text-gray-600">{deck.description}</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              {deckDetails.name}
+            </h1>
+            <p className="mt-2 text-gray-600">{deckDetails.description}</p>
             <div className="mt-4 flex items-center text-sm text-gray-500">
               <i className="fas fa-layer-group mr-2"></i>
-              <span>{deck.totalCards} cards</span>
+              <span>{deckDetails.totalCards} cards</span>
             </div>
           </div>
           {/* Action Buttons */}
