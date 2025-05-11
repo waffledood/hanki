@@ -10,6 +10,12 @@ function DeckPage() {
   const [deckDetails, setDeckDetails] = useState({});
   const [deckCards, setDeckCards] = useState([]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newCardFormData, setNewCardFormData] = useState({
+    question: "",
+    answer: "",
+  });
+
   useEffect(() => {
     // fetch details of the specified Deck
     apiRequest(`decks/${deckId}`)
@@ -160,7 +166,10 @@ function DeckPage() {
         Get started by adding your first flashcard to this deck.
       </p>
       <div className="mt-6">
-        <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md cursor-pointer !rounded-button whitespace-nowrap">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md cursor-pointer !rounded-button whitespace-nowrap"
+        >
           <i className="fas fa-plus mr-2"></i>
           Add First Card
         </button>
@@ -233,10 +242,107 @@ function DeckPage() {
 
       {/* Floating Action Button */}
       <div className="fixed bottom-8 right-8">
-        <button className="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button whitespace-nowrap">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button whitespace-nowrap"
+        >
           <i className="fas fa-plus text-xl"></i>
         </button>
       </div>
+
+      {/* Add Card Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-full max-w-2xl mx-4 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h3 className="text-xl font-semibold text-gray-900">
+                Add New Card
+              </h3>
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setNewCardFormData({ question: "", answer: "" });
+                }}
+                className="text-gray-400 hover:text-gray-500 !rounded-button whitespace-nowrap"
+              >
+                <i className="fas fa-times text-xl"></i>
+              </button>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-6">
+                <label
+                  htmlFor="question"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Question
+                </label>
+                <textarea
+                  id="question"
+                  className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto"
+                  placeholder="Enter your question"
+                  value={newCardFormData.question}
+                  onChange={(e) =>
+                    setNewCardFormData((prev) => ({
+                      ...prev,
+                      question: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+
+              <div className="mb-6">
+                <label
+                  htmlFor="answer"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Answer
+                </label>
+                <textarea
+                  id="answer"
+                  className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto"
+                  placeholder="Enter your answer"
+                  value={newCardFormData.answer}
+                  onChange={(e) =>
+                    setNewCardFormData((prev) => ({
+                      ...prev,
+                      answer: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="px-6 py-4 bg-gray-50 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setNewCardFormData({ question: "", answer: "" });
+                }}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 !rounded-button whitespace-nowrap"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  // TODO - Handle the card creation
+                  console.log("New card:", newCardFormData);
+
+                  setIsModalOpen(false);
+                  setNewCardFormData({ question: "", answer: "" });
+                }}
+                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 !rounded-button whitespace-nowrap cursor-pointer"
+                disabled={
+                  !newCardFormData.question.trim() ||
+                  !newCardFormData.answer.trim()
+                }
+              >
+                Add Card
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </MainLayout>
   );
 }
