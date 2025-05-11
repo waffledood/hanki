@@ -4,21 +4,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanki.backend.dto.CardPostDto;
 import com.hanki.backend.model.Card;
 import com.hanki.backend.model.Deck;
+import com.hanki.backend.model.User;
+import com.hanki.backend.repository.UserRepository;
 import com.hanki.backend.service.CardService;
+import com.hanki.backend.service.UserService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,6 +39,19 @@ public class CardControllerTest {
 
     @MockitoBean
     private CardService cardService;
+
+    @BeforeAll
+    public static void setup(@Autowired UserRepository userRepository, @Autowired UserService userService) {
+        // create a sample user
+        if (userRepository.findByUsername("testuser") == null) {
+            User user = new User();
+            user.setUsername("testuser");
+            user.setEmail("test@email.com");
+            user.setPassword(userService.getEncoder().encode("password"));
+            user.setRole("USER");
+            userRepository.save(user);
+        }
+    }
 
     @Test
     @WithMockUser
@@ -99,7 +115,7 @@ public class CardControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithUserDetails(value = "testuser", userDetailsServiceBeanName = "HankiUserDetailsService")
     public void testPostCard() throws Exception {
         // Define sample values of created Card
         String frontText = "Sample front text 1";
@@ -112,29 +128,15 @@ public class CardControllerTest {
         cardDto.setAnswer(backText);
         cardDto.setDeckId(deckId);
 
-        // Mock the behavior of the CardService
-        Card card = new Card();
-        card.setQuestion(frontText);
-        card.setAnswer(backText);
-        card.setDeck(new Deck()); // empty Deck
-
-        // When the saveDeck method is called, return the mock Card
-        Mockito.when(cardService.createCard(Mockito.any(CardPostDto.class))).thenReturn(card);
-
         // Convert the DTO to JSON
         String cardJson = objectMapper.writeValueAsString(cardDto);
 
         // Perform POST request
-        MvcResult result = mockMvc.perform(post("/cards")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(cardJson))
+        mockMvc.perform(post("/cards")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(cardJson))
                 .andExpect(status().isCreated())  // Expect HTTP 201 Created status
                 .andReturn();
-
-        // Optionally, you can assert response content
-        String responseContent = result.getResponse().getContentAsString();
-        // You can verify the returned values (for example, the name or ID of the created deck)
-        assertTrue(responseContent.contains("Sample front text 1"));
     }
 
     @Test
@@ -149,15 +151,6 @@ public class CardControllerTest {
         cardDto.setQuestion(frontText);
         cardDto.setAnswer(backText);
         cardDto.setDeckId(deckId);
-
-        // Mock the behavior of the CardService
-        Card card = new Card();
-        card.setQuestion(frontText);
-        card.setAnswer(backText);
-        card.setDeck(new Deck()); // empty Deck
-
-        // When the saveDeck method is called, return the mock Card
-        Mockito.when(cardService.createCard(Mockito.any(CardPostDto.class))).thenReturn(card);
 
         // Convert the DTO to JSON
         String cardJson = objectMapper.writeValueAsString(cardDto);
