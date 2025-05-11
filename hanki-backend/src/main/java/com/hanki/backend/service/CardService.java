@@ -3,6 +3,7 @@ package com.hanki.backend.service;
 import com.hanki.backend.dto.CardPostDto;
 import com.hanki.backend.model.Card;
 import com.hanki.backend.model.Deck;
+import com.hanki.backend.model.User;
 import com.hanki.backend.repository.CardRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -43,15 +44,17 @@ public class CardService {
     }
 
     @Transactional
-    public Card createCard(CardPostDto cardPostDto) {
+    public Card createCard(CardPostDto cardPostDto, User user) {
         Card card = new Card();
-        card.setFrontText(cardPostDto.getFrontText());
-        card.setBackText(cardPostDto.getBackText());
+        card.setQuestion(cardPostDto.getQuestion());
+        card.setAnswer(cardPostDto.getAnswer());
 
         Integer deckId = cardPostDto.getDeckId();
         Deck deck = deckService.findById(deckId)
                 .orElseThrow(() -> new EntityNotFoundException("Deck not found with ID: " + deckId));
         card.setDeck(deck);
+
+        card.setOwner(user);
 
         return cardRepository.save(card);
     }

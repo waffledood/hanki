@@ -3,10 +3,13 @@ package com.hanki.backend.controller;
 import com.hanki.backend.dto.CardPostDto;
 import com.hanki.backend.exception.CardNotFoundException;
 import com.hanki.backend.model.Card;
+import com.hanki.backend.model.User;
+import com.hanki.backend.model.UserPrincipal;
 import com.hanki.backend.service.CardService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -27,8 +30,10 @@ public class CardController {
     }
 
     @PostMapping
-    public ResponseEntity<Card> createCard(@Valid @RequestBody CardPostDto cardPostDto) {
-        Card card = cardService.createCard(cardPostDto);
+    public ResponseEntity<Card> createCard(@Valid @RequestBody CardPostDto cardPostDto,
+                                           @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        User user = userPrincipal.getUser();
+        Card card = cardService.createCard(cardPostDto, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(card);
     }
