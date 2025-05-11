@@ -100,32 +100,26 @@ function Home() {
   ];
 
   const createDeck = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/hanki/decks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: newDeckName,
-          description: newDeckDescription,
-        }),
-      });
+    apiRequest("decks", "POST", {
+      name: newDeckName,
+      description: newDeckDescription,
+    })
+      .then((res) => {
+        switch (res.status) {
+          case 201:
+            return res.json();
+          default:
+            throw new Error("Failed to create new Deck");
+        }
+      })
+      .then((newDeck) => {
+        // log new Deck
+        console.log("New Deck created:", newDeck);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const newDeck = await response.json();
-
-      // log new Deck
-      console.log(newDeck);
-
-      // add new Deck to list of Decks
-    } catch (error) {
-      // handle error
-      console.log(error);
-    }
+        // add new Deck to list of Decks
+        setDecks((prevDecks) => [...prevDecks, newDeck]);
+      })
+      .catch((err) => console.error("Error:", err));
   };
 
   const handleShowCreateModal = (show) => {
