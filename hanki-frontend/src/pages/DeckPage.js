@@ -35,10 +35,6 @@ function DeckPage() {
         switch (res.status) {
           case 200:
             return res.json();
-          // TODO - Fix! This is incorrect
-          case 404:
-            console.log(`No Cards in Deck ${deckId}`);
-            return [];
           default:
             throw new Error(`Failed to retrieve Cards from Deck ${deckId}`);
         }
@@ -268,7 +264,7 @@ function DeckPage() {
 
         {/* Card List - Scrollable Section */}
         <div className="flex-1 overflow-auto pt-2">
-          {cardsList.length > 0 ? cardsList : noCardInfo}
+          {deckCards.length > 0 ? cardsList : noCardInfo}
         </div>
       </main>
 
