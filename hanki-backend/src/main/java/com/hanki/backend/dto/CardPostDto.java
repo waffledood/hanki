@@ -6,29 +6,29 @@ import jakarta.validation.constraints.NotNull;
 
 public class CardPostDto {
     @NotBlank(message = "Front text is required")
-    private String frontText;
+    private String question;
 
     @NotBlank(message = "Back text is required")
-    private String backText;
+    private String answer;
 
     @NotNull(message = "Deck ID cannot be null")
     @Min(value = 0, message = "Card ID must be at least 0")
     private Integer deckId;
 
-    public String getFrontText() {
-        return frontText;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setFrontText(String frontText) {
-        this.frontText = frontText;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
-    public String getBackText() {
-        return backText;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setBackText(String backText) {
-        this.backText = backText;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public Integer getDeckId() {

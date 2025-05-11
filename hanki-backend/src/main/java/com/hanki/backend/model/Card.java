@@ -1,5 +1,6 @@
 package com.hanki.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -14,17 +15,19 @@ public class Card {
     private Integer id;
 
     @Column(name = "question", nullable = false, columnDefinition = "TEXT")
-    private String frontText;
+    private String question;
 
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
-    private String backText;
+    private String answer;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "deck_id", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_decks"))
     private Deck deck;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "owner", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_users"))
+    @JoinColumn(name = "owner_id", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_users"))
     private User owner;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -46,20 +49,20 @@ public class Card {
         this.id = id;
     }
 
-    public String getFrontText() {
-        return frontText;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setFrontText(String frontText) {
-        this.frontText = frontText;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
-    public String getBackText() {
-        return backText;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setBackText(String backText) {
-        this.backText = backText;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public Deck getDeck() {
@@ -70,11 +73,11 @@ public class Card {
         this.deck = deck;
     }
 
-    public User getUser() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setUser(User owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
