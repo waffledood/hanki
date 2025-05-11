@@ -24,7 +24,7 @@ public class Card {
     private Deck deck;
 
     @ManyToOne
-    @JoinColumn(name = "owner", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_users"))
+    @JoinColumn(name = "owner_id", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_users"))
     private User owner;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -70,11 +70,11 @@ public class Card {
         this.deck = deck;
     }
 
-    public User getUser() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setUser(User owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
