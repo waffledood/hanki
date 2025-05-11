@@ -59,8 +59,8 @@ public class CardControllerTest {
         int existingCardId = 1;
         Card mockCard = new Card();
         mockCard.setId(existingCardId);
-        mockCard.setFrontText("Mock Front Text");
-        mockCard.setBackText("Mock Back Text");
+        mockCard.setQuestion("Mock Front Text");
+        mockCard.setAnswer("Mock Back Text");
         mockCard.setDeck(new Deck());
 
         // Mock the service method to return the mock Card created
@@ -76,8 +76,8 @@ public class CardControllerTest {
         int existingCardId = 1;
         Card mockCard = new Card();
         mockCard.setId(existingCardId);
-        mockCard.setFrontText("Mock Front Text");
-        mockCard.setBackText("Mock Back Text");
+        mockCard.setQuestion("Mock Front Text");
+        mockCard.setAnswer("Mock Back Text");
         mockCard.setDeck(new Deck());
 
         // Mock the service method to return the mock Card created
@@ -108,14 +108,14 @@ public class CardControllerTest {
 
         // Initialize your CardDto with necessary values for the test
         CardPostDto cardDto = new CardPostDto();
-        cardDto.setFrontText(frontText);
-        cardDto.setBackText(backText);
+        cardDto.setQuestion(frontText);
+        cardDto.setAnswer(backText);
         cardDto.setDeckId(deckId);
 
         // Mock the behavior of the CardService
         Card card = new Card();
-        card.setFrontText(frontText);
-        card.setBackText(backText);
+        card.setQuestion(frontText);
+        card.setAnswer(backText);
         card.setDeck(new Deck()); // empty Deck
 
         // When the saveDeck method is called, return the mock Card
@@ -146,14 +146,14 @@ public class CardControllerTest {
 
         // Initialize your CardDto with necessary values for the test
         CardPostDto cardDto = new CardPostDto();
-        cardDto.setFrontText(frontText);
-        cardDto.setBackText(backText);
+        cardDto.setQuestion(frontText);
+        cardDto.setAnswer(backText);
         cardDto.setDeckId(deckId);
 
         // Mock the behavior of the CardService
         Card card = new Card();
-        card.setFrontText(frontText);
-        card.setBackText(backText);
+        card.setQuestion(frontText);
+        card.setAnswer(backText);
         card.setDeck(new Deck()); // empty Deck
 
         // When the saveDeck method is called, return the mock Card
@@ -180,8 +180,8 @@ public class CardControllerTest {
 
         // Initialize your CardDto with necessary values for the test
         CardPostDto cardDto = new CardPostDto();
-        cardDto.setFrontText(emptyFrontText);
-        cardDto.setBackText(backText);
+        cardDto.setQuestion(emptyFrontText);
+        cardDto.setAnswer(backText);
         cardDto.setDeckId(deckId);
 
         // Convert the DTO to JSON
