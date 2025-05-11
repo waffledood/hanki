@@ -1,5 +1,6 @@
 package com.hanki.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
@@ -19,10 +20,12 @@ public class Card {
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
     private String answer;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "deck_id", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_decks"))
     private Deck deck;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_users"))
     private User owner;
