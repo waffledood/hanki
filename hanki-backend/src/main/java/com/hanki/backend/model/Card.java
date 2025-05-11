@@ -14,10 +14,10 @@ public class Card {
     private Integer id;
 
     @Column(name = "question", nullable = false, columnDefinition = "TEXT")
-    private String frontText;
+    private String question;
 
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
-    private String backText;
+    private String answer;
 
     @ManyToOne
     @JoinColumn(name = "deck_id", nullable = false, foreignKey = @ForeignKey(name = "fk_cards_decks"))
@@ -46,20 +46,20 @@ public class Card {
         this.id = id;
     }
 
-    public String getFrontText() {
-        return frontText;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setFrontText(String frontText) {
-        this.frontText = frontText;
+    public void setQuestion(String question) {
+        this.question = question;
     }
 
-    public String getBackText() {
-        return backText;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setBackText(String backText) {
-        this.backText = backText;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public Deck getDeck() {
