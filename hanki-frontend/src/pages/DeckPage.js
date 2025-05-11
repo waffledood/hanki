@@ -31,8 +31,8 @@ function DeckPage() {
           case 200:
             return res.json();
           case 404:
-            setDeckCards([]);
-            throw new Error(`No cards in Deck ${deckId}`);
+            console.log(`No Cards in Deck ${deckId}`);
+            return [];
           default:
             throw new Error(`Failed to retrieve Cards from Deck ${deckId}`);
         }
