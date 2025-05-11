@@ -2,9 +2,11 @@ package com.hanki.backend.controller;
 
 import com.hanki.backend.dto.DeckPostDto;
 import com.hanki.backend.exception.DeckNotFoundException;
+import com.hanki.backend.model.Card;
 import com.hanki.backend.model.Deck;
 import com.hanki.backend.model.User;
 import com.hanki.backend.model.UserPrincipal;
+import com.hanki.backend.service.CardService;
 import com.hanki.backend.service.DeckService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,8 +23,11 @@ public class DeckController {
 
     private final DeckService deckService;
 
-    public DeckController(DeckService deckService) {
+    private final CardService cardService;
+
+    public DeckController(DeckService deckService, CardService cardService) {
         this.deckService = deckService;
+        this.cardService = cardService;
     }
 
     @GetMapping
@@ -45,6 +50,11 @@ public class DeckController {
     @GetMapping("/{id}")
     public Deck getDeckById(@PathVariable Integer id) {
         return deckService.findById(id).orElseThrow(() -> new DeckNotFoundException("Deck not found with id: " + id));
+    }
+
+    @GetMapping("/{id}/cards")
+    public Iterable<Card> getCardsOfDeck(@PathVariable Integer id) {
+        return cardService.findAllCardsInDeck(id);
     }
 
     @ExceptionHandler(DeckNotFoundException.class)

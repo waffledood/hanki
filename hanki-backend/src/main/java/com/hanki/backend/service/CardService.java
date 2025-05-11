@@ -58,4 +58,9 @@ public class CardService {
 
         return cardRepository.save(card);
     }
+
+    @Transactional
+    public Iterable<Card> findAllCardsInDeck(Integer deckId) {
+        return cardRepository.findByDeckId(deckId);
+    }
 }
