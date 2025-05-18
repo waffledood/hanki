@@ -21,6 +21,9 @@ public class UserService {
     @Autowired
     AuthenticationManager authManager;
 
+    @Autowired
+    JWTService jwtService;
+
     // TODO - Abstract out strength value to properties
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
@@ -36,13 +39,13 @@ public class UserService {
     }
 
     public String verify(UserLoginDto userLoginDto) {
-        String message = "Success";
+        String message = "Fail";
 
         try {
             Authentication authentication =
                     authManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
             if (authentication.isAuthenticated()) {
-                return message;
+                return jwtService.generateToken(userLoginDto.getUsername());
             }
         } catch (AuthenticationException e) {
             message = "Fail";

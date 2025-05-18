@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -31,13 +33,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
-        String message = userService.verify(userLoginDto);
+    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
+        String accessToken = userService.verify(userLoginDto);
 
-        if (message.equals("Success")) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(message);
+        if ("Fail".equals(accessToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid credentials"));
         }
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+        Map<String, String> responseBody = Map.of(
+                "access_token", accessToken
+        );
+
+        return ResponseEntity.ok(responseBody);
     }
 }
