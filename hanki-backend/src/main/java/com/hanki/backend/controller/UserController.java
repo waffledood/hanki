@@ -31,15 +31,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponseDto> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
-        User user = userService.loginUser(userLoginDto);
+    public ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
+        String message = userService.verify(userLoginDto);
 
-        if (user != null) {
-            UserResponseDto userResponseDto = new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        if (message.equals("Success")) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(message);
         }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
     }
 }
