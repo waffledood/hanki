@@ -1,16 +1,18 @@
 package com.hanki.backend.security;
 
-import com.hanki.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -20,9 +22,6 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Autowired
-    private UserService userService;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -30,7 +29,7 @@ public class SecurityConfig {
                 // disable CSRF
                 .csrf(customizer -> customizer.disable())
                 // TODO - Update the exact endpoint(s) that don't require auth
-                .authorizeHttpRequests(request -> request.requestMatchers("/users/register", "users/login").permitAll())
+                .authorizeHttpRequests(request -> request.requestMatchers("/users/register", "/users/login").permitAll())
                 // all other endpoints require auth
                 .authorizeHttpRequests(request -> request.anyRequest().authenticated())
                 // to allow requests via browser
@@ -45,7 +44,8 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(userService.getEncoder());
+        // TODO - Abstract out strength value to properties
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         provider.setUserDetailsService(userDetailsService);
 
         return provider;
