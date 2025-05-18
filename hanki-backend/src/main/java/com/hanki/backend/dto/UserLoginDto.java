@@ -10,6 +10,10 @@ public class UserLoginDto {
     @Size(max = 100, message = "Email must be at most 100 characters")
     private String email;
 
+    @NotBlank(message = "Username cannot be blank")
+    @Size(max = 100, message = "Username must be at most 50 characters")
+    private String username;
+
     @NotBlank(message = "Password is required")
     private String password;
 
@@ -19,6 +23,14 @@ public class UserLoginDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
