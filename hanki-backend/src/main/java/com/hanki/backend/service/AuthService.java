@@ -51,6 +51,16 @@ public class AuthService {
         return Map.of();
     }
 
+    public boolean validateRefreshToken(String refreshToken) {
+        return jwtService.validateToken(refreshToken);
+    }
+
+    public Map<String, String> refreshAccessToken(String refreshToken) {
+        String username = jwtService.extractUserName(refreshToken);
+
+        return jwtService.generateAccessToken(username, refreshToken);
+    }
+
     public User loginUser(UserLoginDto userLoginDto) {
         try {
             User user = userRepository.findByEmail(userLoginDto.getEmail());

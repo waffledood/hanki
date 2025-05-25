@@ -1,5 +1,6 @@
 package com.hanki.backend.controller;
 
+import com.hanki.backend.dto.RefreshTokenRequestDto;
 import com.hanki.backend.dto.UserLoginDto;
 import com.hanki.backend.dto.UserPostDto;
 import com.hanki.backend.dto.UserResponseDto;
@@ -45,5 +46,21 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(accessAndRefreshTokens);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<Map<String, String>> refreshAccessToken(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequest) {
+        Map<String, String> accessAndRefreshTokensMap;
+
+        if (authService.validateRefreshToken(refreshTokenRequest.getRefreshToken())) {
+            accessAndRefreshTokensMap = authService.refreshAccessToken(refreshTokenRequest.getRefreshToken());
+
+            return ResponseEntity.ok(accessAndRefreshTokensMap);
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                "error", "invalid_token",
+                "message", "Refresh token has expired")
+        );
     }
 }

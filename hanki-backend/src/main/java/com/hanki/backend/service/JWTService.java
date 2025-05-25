@@ -56,6 +56,24 @@ public class JWTService {
                 .compact();
     }
 
+    /**
+     * Generates a new access token for the specified username while retaining the existing refresh token.
+     *
+     * <p>This method creates a new JWT access token based on the current system time and the provided username.
+     * The original refresh token is not modified or rotated and is returned as-is.
+     *
+     * @param username     The username for which the access token is to be generated.
+     * @param refreshToken The existing refresh token to be returned unchanged.
+     * @return A map containing the new access token under the key {@code "access_token"} and the original refresh token under the key {@code "refresh_token"}.
+     */
+    public Map<String, String> generateAccessToken(String username, String refreshToken) {
+        long currentTime = System.currentTimeMillis();
+
+        String accessToken = generateAccessToken(currentTime, username);
+
+        return Map.of("access_token", accessToken, "refresh_token", refreshToken);
+    }
+
     public Map<String, String> generateAccessRefreshTokens(String username) {
 
         long currentTime = System.currentTimeMillis();
