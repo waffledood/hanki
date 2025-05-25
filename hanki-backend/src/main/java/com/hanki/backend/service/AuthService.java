@@ -13,8 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
-public class UserService {
+public class AuthService {
     @Autowired
     UserRepository userRepository;
 
@@ -38,20 +40,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public String verify(UserLoginDto userLoginDto) {
-        String message = "Fail";
-
-        try {
-            Authentication authentication =
-                    authManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
-            if (authentication.isAuthenticated()) {
-                return jwtService.generateToken(userLoginDto.getUsername());
-            }
-        } catch (AuthenticationException e) {
-            message = "Fail";
+    public Map<String, String> verify(UserLoginDto userLoginDto) throws AuthenticationException {
+        Authentication authentication =
+                authManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(userLoginDto.getUsername());
         }
 
-        return message;
+        return Map.of();
     }
 
     public User loginUser(UserLoginDto userLoginDto) {

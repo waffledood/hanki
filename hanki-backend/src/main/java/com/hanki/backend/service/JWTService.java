@@ -1,5 +1,6 @@
 package com.hanki.backend.service;
 
+import com.hanki.backend.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -21,28 +22,47 @@ public class JWTService {
 
     private String secretKey;
 
-    public JWTService() {
+    private JwtProperties jwtProperties;
+
+    public JWTService(JwtProperties jwtProperties) {
         try {
+            this.jwtProperties = jwtProperties;
+
             KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
             SecretKey sk = keyGen.generateKey();
             secretKey = Base64.getUrlEncoder().withoutPadding().encodeToString(sk.getEncoded());
+            System.out.println("secretKey:" + secretKey);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String generateToken(String username) {
+    public Map<String, String> generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
 
-        return Jwts.builder()
+        long currentTime = System.currentTimeMillis();
+
+        String accessToken = Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .issuedAt(new Date(currentTime))
+                .expiration(new Date(currentTime + 60 * 60 * jwtProperties.getAccessTokenExpirationMins()))
                 .and()
                 .signWith(getKey())
                 .compact();
+
+        String refreshToken = Jwts.builder()
+                .claims()
+                .add(claims)
+                .subject(username)
+                .issuedAt(new Date(currentTime))
+                .expiration(new Date(currentTime + 60 * 60 * 24 * jwtProperties.getRefreshTokenExpirationDays()))
+                .and()
+                .signWith(getKey())
+                .compact();
+
+        return Map.of("access_token", accessToken, "refresh_token", refreshToken);
     }
 
     private SecretKey getKey() {

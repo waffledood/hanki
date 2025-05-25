@@ -7,7 +7,7 @@ import com.hanki.backend.model.Deck;
 import com.hanki.backend.model.User;
 import com.hanki.backend.repository.UserRepository;
 import com.hanki.backend.service.CardService;
-import com.hanki.backend.service.UserService;
+import com.hanki.backend.service.AuthService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +41,13 @@ public class CardControllerTest {
     private CardService cardService;
 
     @BeforeAll
-    public static void setup(@Autowired UserRepository userRepository, @Autowired UserService userService) {
+    public static void setup(@Autowired UserRepository userRepository, @Autowired AuthService authService) {
         // create a sample user
         if (userRepository.findByUsername("testuser") == null) {
             User user = new User();
             user.setUsername("testuser");
             user.setEmail("test@email.com");
-            user.setPassword(userService.getEncoder().encode("password"));
+            user.setPassword(authService.getEncoder().encode("password"));
             user.setRole("USER");
             userRepository.save(user);
         }

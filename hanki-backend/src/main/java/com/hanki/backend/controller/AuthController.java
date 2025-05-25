@@ -4,11 +4,12 @@ import com.hanki.backend.dto.UserLoginDto;
 import com.hanki.backend.dto.UserPostDto;
 import com.hanki.backend.dto.UserResponseDto;
 import com.hanki.backend.model.User;
-import com.hanki.backend.service.UserService;
+import com.hanki.backend.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +22,11 @@ import java.util.Map;
 public class AuthController {
 
     @Autowired
-    UserService userService;
+    AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> registerUser(@Valid @RequestBody UserPostDto userPostDto) {
-        User user = userService.registerUser(userPostDto);
+        User user = authService.registerUser(userPostDto);
 
         UserResponseDto userResponseDto = new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
 
@@ -33,18 +34,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
-        String accessToken = userService.verify(userLoginDto);
+    public ResponseEntity<Map<String, String>> loginUser(@Valid @RequestBody UserLoginDto userLoginDto) {
+        Map<String, String> accessAndRefreshTokens;
 
-        if ("Fail".equals(accessToken)) {
+        try {
+            accessAndRefreshTokens = authService.verify(userLoginDto);
+        } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid credentials"));
         }
 
-        Map<String, String> responseBody = Map.of(
-                "access_token", accessToken
-        );
-
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.ok(accessAndRefreshTokens);
     }
 }
