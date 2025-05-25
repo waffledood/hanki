@@ -25,16 +25,8 @@ public class JWTService {
     private JwtProperties jwtProperties;
 
     public JWTService(JwtProperties jwtProperties) {
-        try {
-            this.jwtProperties = jwtProperties;
-
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGen.generateKey();
-            secretKey = Base64.getUrlEncoder().withoutPadding().encodeToString(sk.getEncoded());
-            System.out.println("secretKey:" + secretKey);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        this.jwtProperties = jwtProperties;
+        this.secretKey = jwtProperties.getSecretKey();
     }
 
     public String generateAccessToken(long currentTime, String username) {
@@ -74,6 +66,20 @@ public class JWTService {
         String refreshToken = generateRefreshToken(currentTime, username);
 
         return Map.of("access_token", accessToken, "refresh_token", refreshToken);
+    }
+
+    public String generateSecretKey() {
+        String secretKey = "";
+
+        try {
+            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
+            SecretKey sk = keyGen.generateKey();
+            secretKey = Base64.getUrlEncoder().withoutPadding().encodeToString(sk.getEncoded());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        return secretKey;
     }
 
     private SecretKey getKey() {
