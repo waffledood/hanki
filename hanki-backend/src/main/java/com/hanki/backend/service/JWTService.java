@@ -37,12 +37,10 @@ public class JWTService {
         }
     }
 
-    public Map<String, String> generateToken(String username) {
+    public String generateAccessToken(long currentTime, String username) {
         Map<String, Object> claims = new HashMap<>();
 
-        long currentTime = System.currentTimeMillis();
-
-        String accessToken = Jwts.builder()
+        return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
@@ -51,8 +49,12 @@ public class JWTService {
                 .and()
                 .signWith(getKey())
                 .compact();
+    }
 
-        String refreshToken = Jwts.builder()
+    public String generateRefreshToken(long currentTime, String username) {
+        Map<String, Object> claims = new HashMap<>();
+
+        return Jwts.builder()
                 .claims()
                 .add(claims)
                 .subject(username)
@@ -61,6 +63,15 @@ public class JWTService {
                 .and()
                 .signWith(getKey())
                 .compact();
+    }
+
+    public Map<String, String> generateToken(String username) {
+
+        long currentTime = System.currentTimeMillis();
+
+        String accessToken = generateAccessToken(currentTime, username);
+
+        String refreshToken = generateRefreshToken(currentTime, username);
 
         return Map.of("access_token", accessToken, "refresh_token", refreshToken);
     }
