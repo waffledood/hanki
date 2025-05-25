@@ -56,7 +56,7 @@ public class JWTService {
                 .compact();
     }
 
-    public Map<String, String> generateToken(String username) {
+    public Map<String, String> generateAccessRefreshTokens(String username) {
 
         long currentTime = System.currentTimeMillis();
 

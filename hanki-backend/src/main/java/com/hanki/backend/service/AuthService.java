@@ -43,8 +43,9 @@ public class AuthService {
     public Map<String, String> verify(UserLoginDto userLoginDto) throws AuthenticationException {
         Authentication authentication =
                 authManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
+
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(userLoginDto.getUsername());
+            return jwtService.generateAccessRefreshTokens(userLoginDto.getUsername());
         }
 
         return Map.of();
