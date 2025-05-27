@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import { apiRequest } from "../utils/fetch";
 
@@ -9,6 +9,8 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,7 +27,7 @@ function LoginPage() {
       })
       .then((data) => {
         console.log(data.success);
-        navigate("/");
+        navigate(from, { replace: true });
       })
       .catch((err) => console.error("Error:", err));
   };
