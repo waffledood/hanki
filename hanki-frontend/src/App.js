@@ -7,17 +7,22 @@ import LoginPage from "./pages/LoginPage";
 import Settings from "./pages/Settings";
 import Statistics from "./pages/Statistics";
 import RegisterPage from "./pages/auth/RegisterPage";
+import RequireAuth from "./components/RequireAuth";
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/statistics" element={<Statistics />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/decks/:deckId" element={<DeckPage />} />
+
+        {/* Protected Routes */}
+        <Route element={<RequireAuth />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/decks/:deckId" element={<DeckPage />} />
+        </Route>
       </Routes>
     </div>
   );
