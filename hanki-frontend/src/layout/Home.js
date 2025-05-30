@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import MainLayout from "./MainLayout";
 import Navbar from "./Navbar";
 import Deck from "../components/Deck";
@@ -19,6 +19,9 @@ function Home() {
   const [decks, setDecks] = useState([]);
   const axiosPrivate = useAxiosPrivate();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -32,6 +35,9 @@ function Home() {
         isMounted && setDecks(response.data);
       } catch (err) {
         console.error(err);
+
+        // redirect user to login page if the refresh token expires
+        navigate("/login", { state: { from: location }, replace: true });
       }
     };
 
