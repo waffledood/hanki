@@ -65,7 +65,7 @@ public class AuthService {
 
     public User loginUser(UserLoginDto userLoginDto) {
         try {
-            User user = userRepository.findByEmail(userLoginDto.getEmail());
+            User user = userRepository.findByUsername(userLoginDto.getUsername());
 
             if (user == null) {
                 // logger.info("User doesn't exist in database");
