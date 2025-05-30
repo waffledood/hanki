@@ -5,6 +5,7 @@ import Navbar from "./Navbar";
 import Deck from "../components/Deck";
 
 import { apiRequest } from "../utils/fetch";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,21 +17,30 @@ function Home() {
   const [errors, setErrors] = useState({ name: "", description: "" });
 
   const [decks, setDecks] = useState([]);
+  const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
-    // fetch User's Decks
-    apiRequest("decks", "GET")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to retrieve User's Decks!");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log("data:", data);
-        setDecks(data);
-      })
-      .catch((err) => console.error("Error:", err));
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const getDecks = async () => {
+      try {
+        const response = await axiosPrivate.get("/decks", {
+          signal: controller.signal,
+        });
+        console.log(response.data);
+        isMounted && setDecks(response.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    getDecks();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   // const decks = [
