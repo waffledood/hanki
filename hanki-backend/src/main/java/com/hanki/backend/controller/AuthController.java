@@ -65,7 +65,7 @@ public class AuthController {
             response.addCookie(cookie);
 
             return ResponseEntity.ok().body(
-                    Map.of(JwtConstants.ACCESS_TOKEN, accessToken)
+                    Map.of(JwtConstants.ACCESS_TOKEN.getValue(), accessToken)
             );
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
