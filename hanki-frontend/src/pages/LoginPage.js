@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useAuth from "../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import { apiRequest } from "../utils/fetch";
@@ -11,6 +12,8 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
+
+  const { setAuth } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,7 +29,9 @@ function LoginPage() {
         return res.json();
       })
       .then((data) => {
-        console.log(data.success);
+        const accessToken = data?.access_token;
+        setAuth({ username, password, accessToken });
+
         navigate(from, { replace: true });
       })
       .catch((err) => console.error("Error:", err));
