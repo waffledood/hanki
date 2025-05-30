@@ -40,15 +40,17 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public Map<String, String> verify(UserLoginDto userLoginDto) throws AuthenticationException {
-        Authentication authentication =
-                authManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
+    public boolean isUserVerified(UserLoginDto userLoginDto) throws AuthenticationException {
+        Authentication authentication = null;
 
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateAccessRefreshTokens(userLoginDto.getUsername());
+        try {
+            authentication =
+                    authManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
+        } catch (AuthenticationException e) {
+            return false;
         }
 
-        return Map.of();
+        return authentication.isAuthenticated();
     }
 
     public boolean validateRefreshToken(String refreshToken) {

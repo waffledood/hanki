@@ -28,7 +28,7 @@ public class JWTService {
         this.secretKey = jwtProperties.getSecretKey();
     }
 
-    private String generateAccessToken(long currentTime, String username) {
+    public String generateAccessToken(long currentTime, String username) {
         Map<String, Object> claims = new HashMap<>();
 
         return Jwts.builder()
@@ -42,7 +42,7 @@ public class JWTService {
                 .compact();
     }
 
-    private String generateRefreshToken(long currentTime, String username) {
+    public String generateRefreshToken(long currentTime, String username) {
         Map<String, Object> claims = new HashMap<>();
 
         return Jwts.builder()
