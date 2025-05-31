@@ -1,7 +1,3 @@
-const username = "haikal";
-const password = "password";
-const credentials = btoa(`${username}:${password}`); // base64 encode
-
 /**
  * Makes an HTTP request using fetch with basic auth.
  *
@@ -14,7 +10,6 @@ export async function apiRequest(endpoint, method, body = null) {
   const options = {
     method,
     headers: {
-      Authorization: `Basic ${credentials}`,
       "Content-Type": "application/json",
     },
   };

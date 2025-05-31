@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 
 import { apiRequest } from "../utils/fetch";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 function DeckPage() {
   const [expandedCardId, setExpandedCardId] = useState();
@@ -15,33 +16,51 @@ function DeckPage() {
   const [newCardQuestion, setNewCardQuestion] = useState("");
   const [newCardAnswer, setNewCardAnswer] = useState("");
 
-  useEffect(() => {
-    // fetch details of the specified Deck
-    apiRequest(`decks/${deckId}`)
-      .then((res) => {
-        switch (res.status) {
-          case 200:
-            return res.json();
-          default:
-            throw new Error(`Failed to retrieve details of Deck ${deckId}`);
-        }
-      })
-      .then((data) => setDeckDetails(data))
-      .catch((err) => console.error("Error:", err));
+  const axiosPrivate = useAxiosPrivate();
 
-    // fetch cards for the specified Deck
-    apiRequest(`decks/${deckId}/cards`)
-      .then((res) => {
-        switch (res.status) {
-          case 200:
-            return res.json();
-          default:
-            throw new Error(`Failed to retrieve Cards from Deck ${deckId}`);
-        }
-      })
-      .then((data) => setDeckCards(data))
-      .catch((err) => console.error("Error:", err));
-  }, [deckId]);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchDeckDetails = async () => {
+      try {
+        // fetch details of the specified Deck
+        const response = await axiosPrivate.get(`/decks/${deckId}`, {
+          signal: controller.signal,
+        });
+
+        isMounted && setDeckDetails(response.data);
+      } catch (err) {
+        // redirect user to login page if the refresh token expires
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    const fetchDeckCards = async () => {
+      try {
+        // fetch cards of the specified Deck
+        const response = await axiosPrivate.get(`decks/${deckId}/cards`, {
+          signal: controller.signal,
+        });
+
+        isMounted && setDeckCards(response.data);
+      } catch (err) {
+        // redirect user to login page if the refresh token expires
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    fetchDeckDetails();
+    fetchDeckCards();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, []);
 
   const clearNewCardModal = () => {
     setIsModalOpen(false);
@@ -50,29 +69,34 @@ function DeckPage() {
   };
 
   const handleCreateCard = () => {
-    // TODO - Handle the card creation
-    apiRequest("cards", "POST", {
-      question: newCardQuestion,
-      answer: newCardAnswer,
-      deckId: deckId,
-    })
-      .then((res) => {
-        switch (res.status) {
-          case 201:
-            return res.json();
-          default:
-            throw new Error("Failed to create new Card");
-        }
+    const controller = new AbortController();
+
+    axiosPrivate
+      .post("cards", {
+        question: newCardQuestion,
+        answer: newCardAnswer,
+        deckId: deckId,
+        signal: controller.signal,
       })
-      .then((newCard) => {
-        console.log("New Card:", newCard);
+      .then((res) => {
+        // log new Card
+        console.log("New Card created:", res.data);
 
         // add new Card to existing list of Cards
-        setDeckCards((prevDeckCards) => [...prevDeckCards, newCard]);
+        setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+
+        // update count of Deck's cards
+        setDeckDetails((prev) => ({
+          ...prev,
+          totalCards: (prev.totalCards ?? 0) + 1,
+        }));
+
+        // cleanup by cancelling request
+        controller.abort();
+
+        clearNewCardModal();
       })
       .catch((err) => console.error("Error:", err));
-
-    clearNewCardModal();
   };
 
   // Sample deck data
@@ -237,7 +261,7 @@ function DeckPage() {
             <p className="mt-2 text-gray-600">{deckDetails.description}</p>
             <div className="mt-4 flex items-center text-sm text-gray-500">
               <i className="fas fa-layer-group mr-2"></i>
-              <span>{deckDetails.totalCards} cards</span>
+              <span>{deckDetails.totalCards ?? 0} cards</span>
             </div>
           </div>
           {/* Action Buttons */}

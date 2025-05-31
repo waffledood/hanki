@@ -1,20 +1,25 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import { apiRequest } from "../utils/fetch";
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
+  const { setAuth } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    apiRequest("users/login", "POST", {
-      email: email,
+    apiRequest("auth/login", "POST", {
+      username: username,
       password: password,
     })
       .then((res) => {
@@ -24,8 +29,10 @@ function LoginPage() {
         return res.json();
       })
       .then((data) => {
-        console.log(data.success);
-        navigate("/");
+        const accessToken = data?.access_token;
+        setAuth({ username, password, accessToken });
+
+        navigate(from, { replace: true });
       })
       .catch((err) => console.error("Error:", err));
   };
@@ -41,25 +48,25 @@ function LoginPage() {
           </h2>
 
           <form onSubmit={handleSubmit}>
-            {/* Email Field */}
+            {/* Username Field */}
             <div className="mb-4">
               <label
-                htmlFor="email"
+                htmlFor="username"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Email
+                Username
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i className="fas fa-envelope text-gray-400"></i>
+                  <i className="fas fa-user text-gray-400"></i>
                 </div>
                 <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                  placeholder="Enter your email"
+                  placeholder="Enter your username"
                   required
                 />
               </div>

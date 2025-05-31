@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import MainLayout from "./MainLayout";
 import Navbar from "./Navbar";
 import Deck from "../components/Deck";
 
 import { apiRequest } from "../utils/fetch";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,21 +17,36 @@ function Home() {
   const [errors, setErrors] = useState({ name: "", description: "" });
 
   const [decks, setDecks] = useState([]);
+  const axiosPrivate = useAxiosPrivate();
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    // fetch User's Decks
-    apiRequest("decks", "GET")
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to retrieve User's Decks!");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log("data:", data);
-        setDecks(data);
-      })
-      .catch((err) => console.error("Error:", err));
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const getDecks = async () => {
+      try {
+        const response = await axiosPrivate.get("/decks", {
+          signal: controller.signal,
+        });
+
+        isMounted && setDecks(response.data);
+      } catch (err) {
+        console.error(err);
+
+        // redirect user to login page if the refresh token expires
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    getDecks();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   // const decks = [
@@ -99,29 +115,6 @@ function Home() {
     "Science",
   ];
 
-  const createDeck = async () => {
-    apiRequest("decks", "POST", {
-      name: newDeckName,
-      description: newDeckDescription,
-    })
-      .then((res) => {
-        switch (res.status) {
-          case 201:
-            return res.json();
-          default:
-            throw new Error("Failed to create new Deck");
-        }
-      })
-      .then((newDeck) => {
-        // log new Deck
-        console.log("New Deck created:", newDeck);
-
-        // add new Deck to list of Decks
-        setDecks((prevDecks) => [...prevDecks, newDeck]);
-      })
-      .catch((err) => console.error("Error:", err));
-  };
-
   const handleShowCreateModal = (show) => {
     if (!show) {
       // Close modal
@@ -155,15 +148,54 @@ function Home() {
 
     if (!hasError) {
       // Proceed with creating the deck
-      createDeck();
+      const controller = new AbortController();
 
-      // Close modal
-      setShowCreateModal(false);
+      axiosPrivate
+        .post("/decks", {
+          name: newDeckName,
+          description: newDeckDescription,
+          signal: controller.signal,
+        })
+        .then((res) => {
+          // log new Deck
+          console.log("New Deck created:", res.data);
 
-      // Clean up
-      setNewDeckName("");
-      setNewDeckDescription("");
-      setErrors({ name: "", description: "" });
+          // add new Deck to list of Decks
+          setDecks((prevDecks) => [...prevDecks, res.data]);
+
+          // cleanup by cancelling request
+          controller.abort();
+
+          // Close modal
+          setShowCreateModal(false);
+
+          // Clean up
+          setNewDeckName("");
+          setNewDeckDescription("");
+          setErrors({ name: "", description: "" });
+        })
+        .catch((err) => {
+          switch (err.status) {
+            case 400:
+              const newErrors = { name: "", description: "" };
+
+              const backendErrors = err.response.data?.errors;
+
+              if (backendErrors?.name) {
+                newErrors.name = backendErrors?.name;
+              }
+
+              if (backendErrors?.description) {
+                newErrors.description = backendErrors?.description;
+              }
+
+              setErrors(newErrors);
+              break;
+            default:
+              console.error("An unexpected error occurred:", err);
+              break;
+          }
+        });
     }
   };
 

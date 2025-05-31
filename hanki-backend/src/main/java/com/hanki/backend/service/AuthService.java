@@ -13,8 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
-public class UserService {
+public class AuthService {
     @Autowired
     UserRepository userRepository;
 
@@ -38,25 +40,32 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public String verify(UserLoginDto userLoginDto) {
-        String message = "Fail";
+    public boolean isUserVerified(UserLoginDto userLoginDto) throws AuthenticationException {
+        Authentication authentication = null;
 
         try {
-            Authentication authentication =
+            authentication =
                     authManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
-            if (authentication.isAuthenticated()) {
-                return jwtService.generateToken(userLoginDto.getUsername());
-            }
         } catch (AuthenticationException e) {
-            message = "Fail";
+            return false;
         }
 
-        return message;
+        return authentication.isAuthenticated();
+    }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        return jwtService.validateToken(refreshToken);
+    }
+
+    public Map<String, String> refreshAccessToken(String refreshToken) {
+        String username = jwtService.extractUserName(refreshToken);
+
+        return jwtService.generateAccessToken(username, refreshToken);
     }
 
     public User loginUser(UserLoginDto userLoginDto) {
         try {
-            User user = userRepository.findByEmail(userLoginDto.getEmail());
+            User user = userRepository.findByUsername(userLoginDto.getUsername());
 
             if (user == null) {
                 // logger.info("User doesn't exist in database");
