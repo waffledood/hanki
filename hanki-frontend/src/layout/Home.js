@@ -115,32 +115,6 @@ function Home() {
     "Science",
   ];
 
-  const createDeck = async () => {
-    const controller = new AbortController();
-
-    try {
-      const response = await axiosPrivate.post("/decks", {
-        name: newDeckName,
-        description: newDeckDescription,
-        signal: controller.signal,
-      });
-
-      // log new Deck
-      console.log("New Deck created:", response.data);
-
-      // add new Deck to list of Decks
-      setDecks((prevDecks) => [...prevDecks, response.data]);
-
-      // cleanup by cancelling request
-      controller.abort();
-    } catch (err) {
-      switch (err.status) {
-        case 400:
-          console.error("400 Error:", err);
-      }
-    }
-  };
-
   const handleShowCreateModal = (show) => {
     if (!show) {
       // Close modal
@@ -174,15 +148,54 @@ function Home() {
 
     if (!hasError) {
       // Proceed with creating the deck
-      createDeck();
+      const controller = new AbortController();
 
-      // Close modal
-      setShowCreateModal(false);
+      axiosPrivate
+        .post("/decks", {
+          name: newDeckName,
+          description: newDeckDescription,
+          signal: controller.signal,
+        })
+        .then((res) => {
+          // log new Deck
+          console.log("New Deck created:", res.data);
 
-      // Clean up
-      setNewDeckName("");
-      setNewDeckDescription("");
-      setErrors({ name: "", description: "" });
+          // add new Deck to list of Decks
+          setDecks((prevDecks) => [...prevDecks, res.data]);
+
+          // cleanup by cancelling request
+          controller.abort();
+
+          // Close modal
+          setShowCreateModal(false);
+
+          // Clean up
+          setNewDeckName("");
+          setNewDeckDescription("");
+          setErrors({ name: "", description: "" });
+        })
+        .catch((err) => {
+          switch (err.status) {
+            case 400:
+              const newErrors = { name: "", description: "" };
+
+              const backendErrors = err.response.data?.errors;
+
+              if (backendErrors?.name) {
+                newErrors.name = backendErrors?.name;
+              }
+
+              if (backendErrors?.description) {
+                newErrors.description = backendErrors?.description;
+              }
+
+              setErrors(newErrors);
+              break;
+            default:
+              console.error("An unexpected error occurred:", err);
+              break;
+          }
+        });
     }
   };
 
