@@ -31,7 +31,7 @@ function Home() {
         const response = await axiosPrivate.get("/decks", {
           signal: controller.signal,
         });
-        console.log(response.data);
+
         isMounted && setDecks(response.data);
       } catch (err) {
         console.error(err);
@@ -116,26 +116,29 @@ function Home() {
   ];
 
   const createDeck = async () => {
-    apiRequest("decks", "POST", {
-      name: newDeckName,
-      description: newDeckDescription,
-    })
-      .then((res) => {
-        switch (res.status) {
-          case 201:
-            return res.json();
-          default:
-            throw new Error("Failed to create new Deck");
-        }
-      })
-      .then((newDeck) => {
-        // log new Deck
-        console.log("New Deck created:", newDeck);
+    const controller = new AbortController();
 
-        // add new Deck to list of Decks
-        setDecks((prevDecks) => [...prevDecks, newDeck]);
-      })
-      .catch((err) => console.error("Error:", err));
+    try {
+      const response = await axiosPrivate.post("/decks", {
+        name: newDeckName,
+        description: newDeckDescription,
+        signal: controller.signal,
+      });
+
+      // log new Deck
+      console.log("New Deck created:", response.data);
+
+      // add new Deck to list of Decks
+      setDecks((prevDecks) => [...prevDecks, response.data]);
+
+      // cleanup by cancelling request
+      controller.abort();
+    } catch (err) {
+      switch (err.status) {
+        case 400:
+          console.error("400 Error:", err);
+      }
+    }
   };
 
   const handleShowCreateModal = (show) => {
