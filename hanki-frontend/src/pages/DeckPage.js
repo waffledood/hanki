@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 
 import { apiRequest } from "../utils/fetch";
@@ -18,6 +18,9 @@ function DeckPage() {
 
   const axiosPrivate = useAxiosPrivate();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -31,7 +34,8 @@ function DeckPage() {
 
         isMounted && setDeckDetails(response.data);
       } catch (err) {
-        // redirect user to login page
+        // redirect user to login page if the refresh token expires
+        navigate("/login", { state: { from: location }, replace: true });
       }
     };
 
@@ -44,7 +48,8 @@ function DeckPage() {
 
         isMounted && setDeckCards(response.data);
       } catch (err) {
-        // redirect user to login page
+        // redirect user to login page if the refresh token expires
+        navigate("/login", { state: { from: location }, replace: true });
       }
     };
 
