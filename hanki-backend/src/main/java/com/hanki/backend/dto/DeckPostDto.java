@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 public class DeckPostDto {
     @NotBlank(message = "Name cannot be blank")
-    @Size(max = 255, message = "Name must be at most 255 characters")
+    @Size(max = 64, message = "Name must be at most 64 characters")
     private String name;
 
     @NotBlank(message = "Description is required")
