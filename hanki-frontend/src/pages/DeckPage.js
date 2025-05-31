@@ -16,6 +16,9 @@ function DeckPage() {
   const [newCardQuestion, setNewCardQuestion] = useState("");
   const [newCardAnswer, setNewCardAnswer] = useState("");
 
+  // errors for creation of new Card
+  const [errors, setErrors] = useState({ question: "", answer: "" });
+
   const axiosPrivate = useAxiosPrivate();
 
   const navigate = useNavigate();
