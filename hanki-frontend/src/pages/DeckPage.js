@@ -69,29 +69,31 @@ function DeckPage() {
   };
 
   const handleCreateCard = () => {
-    // TODO - Handle the card creation
-    apiRequest("cards", "POST", {
-      question: newCardQuestion,
-      answer: newCardAnswer,
-      deckId: deckId,
-    })
-      .then((res) => {
-        switch (res.status) {
-          case 201:
-            return res.json();
-          default:
-            throw new Error("Failed to create new Card");
-        }
+    const controller = new AbortController();
+
+    axiosPrivate
+      .post("cards", {
+        question: newCardQuestion,
+        answer: newCardAnswer,
+        deckId: deckId,
+        signal: controller.signal,
       })
-      .then((newCard) => {
-        console.log("New Card:", newCard);
+      .then((res) => {
+        // log new Card
+        console.log("New Card created:", res.data);
 
         // add new Card to existing list of Cards
-        setDeckCards((prevDeckCards) => [...prevDeckCards, newCard]);
+        setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+
+        // update count of Deck's cards
+        setDeckDetails((prev) => ({
+          ...prev,
+          totalCards: (prev.totalCards ?? 0) + 1,
+        }));
+
+        clearNewCardModal();
       })
       .catch((err) => console.error("Error:", err));
-
-    clearNewCardModal();
   };
 
   // Sample deck data
@@ -256,7 +258,7 @@ function DeckPage() {
             <p className="mt-2 text-gray-600">{deckDetails.description}</p>
             <div className="mt-4 flex items-center text-sm text-gray-500">
               <i className="fas fa-layer-group mr-2"></i>
-              <span>{deckDetails.totalCards} cards</span>
+              <span>{deckDetails.totalCards ?? 0} cards</span>
             </div>
           </div>
           {/* Action Buttons */}
