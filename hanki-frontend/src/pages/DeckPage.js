@@ -91,6 +91,9 @@ function DeckPage() {
           totalCards: (prev.totalCards ?? 0) + 1,
         }));
 
+        // cleanup by cancelling request
+        controller.abort();
+
         clearNewCardModal();
       })
       .catch((err) => console.error("Error:", err));
