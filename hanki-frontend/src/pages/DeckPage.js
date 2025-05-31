@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 
 import { apiRequest } from "../utils/fetch";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 function DeckPage() {
   const [expandedCardId, setExpandedCardId] = useState();
@@ -15,33 +16,46 @@ function DeckPage() {
   const [newCardQuestion, setNewCardQuestion] = useState("");
   const [newCardAnswer, setNewCardAnswer] = useState("");
 
-  useEffect(() => {
-    // fetch details of the specified Deck
-    apiRequest(`decks/${deckId}`)
-      .then((res) => {
-        switch (res.status) {
-          case 200:
-            return res.json();
-          default:
-            throw new Error(`Failed to retrieve details of Deck ${deckId}`);
-        }
-      })
-      .then((data) => setDeckDetails(data))
-      .catch((err) => console.error("Error:", err));
+  const axiosPrivate = useAxiosPrivate();
 
-    // fetch cards for the specified Deck
-    apiRequest(`decks/${deckId}/cards`)
-      .then((res) => {
-        switch (res.status) {
-          case 200:
-            return res.json();
-          default:
-            throw new Error(`Failed to retrieve Cards from Deck ${deckId}`);
-        }
-      })
-      .then((data) => setDeckCards(data))
-      .catch((err) => console.error("Error:", err));
-  }, [deckId]);
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const fetchDeckDetails = async () => {
+      try {
+        // fetch details of the specified Deck
+        const response = await axiosPrivate.get(`/decks/${deckId}`, {
+          signal: controller.signal,
+        });
+
+        isMounted && setDeckDetails(response.data);
+      } catch (err) {
+        // redirect user to login page
+      }
+    };
+
+    const fetchDeckCards = async () => {
+      try {
+        // fetch cards of the specified Deck
+        const response = await axiosPrivate.get(`decks/${deckId}/cards`, {
+          signal: controller.signal,
+        });
+
+        isMounted && setDeckCards(response.data);
+      } catch (err) {
+        // redirect user to login page
+      }
+    };
+
+    fetchDeckDetails();
+    fetchDeckCards();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, []);
 
   const clearNewCardModal = () => {
     setIsModalOpen(false);
