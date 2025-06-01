@@ -256,7 +256,7 @@ function DeckPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center">
             <Link to="/">
-              <button className="text-gray-600 hover:text-gray-900 cursor-pointer !rounded-button whitespace-nowrap">
+              <button className="text-gray-600 hover:text-gray-900 cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
                 <i className="fas fa-arrow-left mr-2"></i>
                 Back to Decks
               </button>
@@ -286,19 +286,19 @@ function DeckPage() {
           </div>
           {/* Action Buttons */}
           <div className="mb-2 flex flex-wrap gap-3">
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
               <i className="fas fa-book-open mr-2"></i>
               Study Now
             </button>
-            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
               <i className="fas fa-random mr-2"></i>
               Shuffle
             </button>
-            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
               <i className="fas fa-sort mr-2"></i>
               Sort
             </button>
-            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
               <i className="fas fa-filter mr-2"></i>
               Filter
             </button>
@@ -316,7 +316,7 @@ function DeckPage() {
       <div className="fixed bottom-8 right-8">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button whitespace-nowrap"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500"
         >
           <i className="fas fa-plus text-xl"></i>
         </button>
