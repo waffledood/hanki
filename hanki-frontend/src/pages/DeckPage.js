@@ -72,34 +72,51 @@ function DeckPage() {
   };
 
   const handleCreateCard = () => {
-    const controller = new AbortController();
+    let hasError = false;
+    const newErrors = { question: "", answer: "" };
 
-    axiosPrivate
-      .post("cards", {
-        question: newCardQuestion,
-        answer: newCardAnswer,
-        deckId: deckId,
-        signal: controller.signal,
-      })
-      .then((res) => {
-        // log new Card
-        console.log("New Card created:", res.data);
+    if (!newCardQuestion.trim()) {
+      newErrors.question = "Card question is required.";
+      hasError = true;
+    }
 
-        // add new Card to existing list of Cards
-        setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+    if (!newCardAnswer.trim()) {
+      newErrors.answer = "Card answer is required.";
+      hasError = true;
+    }
 
-        // update count of Deck's cards
-        setDeckDetails((prev) => ({
-          ...prev,
-          totalCards: (prev.totalCards ?? 0) + 1,
-        }));
+    setErrors(newErrors);
 
-        // cleanup by cancelling request
-        controller.abort();
+    if (!hasError) {
+      const controller = new AbortController();
 
-        clearNewCardModal();
-      })
-      .catch((err) => console.error("Error:", err));
+      axiosPrivate
+        .post("cards", {
+          question: newCardQuestion,
+          answer: newCardAnswer,
+          deckId: deckId,
+          signal: controller.signal,
+        })
+        .then((res) => {
+          // log new Card
+          console.log("New Card created:", res.data);
+
+          // add new Card to existing list of Cards
+          setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+
+          // update count of Deck's cards
+          setDeckDetails((prev) => ({
+            ...prev,
+            totalCards: (prev.totalCards ?? 0) + 1,
+          }));
+
+          // cleanup by cancelling request
+          controller.abort();
+
+          clearNewCardModal();
+        })
+        .catch((err) => console.error("Error:", err));
+    }
   };
 
   // Sample deck data
@@ -333,11 +350,16 @@ function DeckPage() {
                 </label>
                 <textarea
                   id="question"
-                  className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto"
+                  className={`w-full h-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto ${
+                    errors.question ? "border-red-500 focus:ring-red-500" : ""
+                  }`}
                   placeholder="Enter your question"
                   value={newCardQuestion}
                   onChange={(e) => setNewCardQuestion(e.target.value)}
                 />
+                {errors.question && (
+                  <p className="text-red-500 text-sm mt-1">{errors.question}</p>
+                )}
               </div>
 
               <div className="mb-6">
@@ -349,11 +371,16 @@ function DeckPage() {
                 </label>
                 <textarea
                   id="answer"
-                  className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto"
+                  className={`w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto ${
+                    errors.answer ? "border-red-500 focus:ring-red-500" : ""
+                  }`}
                   placeholder="Enter your answer"
                   value={newCardAnswer}
                   onChange={(e) => setNewCardAnswer(e.target.value)}
                 />
+                {errors.answer && (
+                  <p className="text-red-500 text-sm mt-1">{errors.answer}</p>
+                )}
               </div>
             </div>
 
@@ -369,7 +396,7 @@ function DeckPage() {
               <button
                 onClick={() => handleCreateCard()}
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed !rounded-button whitespace-nowrap cursor-pointer"
-                disabled={!newCardQuestion.trim() || !newCardAnswer.trim()}
+                // disabled={!newCardQuestion.trim() || !newCardAnswer.trim()}
               >
                 Add Card
               </button>
