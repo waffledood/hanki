@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
+import Navbar from "../layout/Navbar";
 
-import { apiRequest } from "../utils/fetch";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 function DeckPage() {
@@ -251,27 +251,10 @@ function DeckPage() {
 
   return (
     <MainLayout>
-      {/* Header */}
-      <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center">
-            <Link to="/">
-              <button className="text-gray-600 hover:text-gray-900 cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
-                <i className="fas fa-arrow-left mr-2"></i>
-                Back to Decks
-              </button>
-            </Link>
-          </div>
-          <div className="flex items-center">
-            <button className="text-gray-600 hover:text-gray-900 p-2 rounded-full cursor-pointer !rounded-button whitespace-nowrap">
-              <i className="fas fa-ellipsis-v"></i>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 flex flex-col">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col">
         {/* Deck Information - Fixed/Floating Section */}
         <div className="sticky top-16 bg-gray-50 pt-4 pb-6 z-9">
           <div className="mb-4">
