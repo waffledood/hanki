@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class CardPostDto {
-    @NotBlank(message = "Front text is required")
+    @NotBlank(message = "Question is required")
     private String question;
 
-    @NotBlank(message = "Back text is required")
+    @NotBlank(message = "Answer is required")
     private String answer;
 
     @NotNull(message = "Deck ID cannot be null")
