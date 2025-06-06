@@ -11,6 +11,13 @@ function DeckPage() {
   const [deckDetails, setDeckDetails] = useState({});
   const [deckCards, setDeckCards] = useState([]);
 
+  // editing of Deck's details
+  const [isEditingDeck, setIsEditingDeck] = useState(false);
+  const [deckEditData, setDeckEditData] = useState({
+    name: "",
+    description: "",
+  });
+
   // modal & form for new Card creation
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCardQuestion, setNewCardQuestion] = useState("");
@@ -59,6 +66,12 @@ function DeckPage() {
     fetchDeckDetails();
     fetchDeckCards();
 
+    setDeckEditData({
+      name: deckDetails.name,
+      description: deckDetails.description,
+    });
+    console.log("deckEditData:", deckEditData);
+
     return () => {
       isMounted = false;
       controller.abort();
@@ -69,6 +82,31 @@ function DeckPage() {
     setIsModalOpen(false);
     setNewCardQuestion("");
     setNewCardAnswer("");
+  };
+
+  const handleEditDeck = () => {
+    setIsEditingDeck(false);
+    setDeckEditData({
+      name: deckDetails.name,
+      description: deckDetails.description,
+    });
+  };
+
+  const cancelDeckEdit = () => {
+    setIsEditingDeck(false);
+    setDeckEditData({
+      name: deckDetails.name,
+      description: deckDetails.description,
+    });
+  };
+
+  const saveDeckChanges = () => {
+    setDeckDetails({
+      ...deck,
+      name: deckEditData.name,
+      description: deckEditData.description,
+    });
+    setIsEditingDeck(false);
   };
 
   const handleCreateCard = () => {
@@ -257,16 +295,84 @@ function DeckPage() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col">
         {/* Deck Information - Fixed/Floating Section */}
         <div className="sticky top-16 bg-gray-50 pt-4 pb-6 z-9">
-          <div className="mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">
-              {deckDetails.name}
-            </h1>
-            <p className="mt-2 text-gray-600">{deckDetails.description}</p>
-            <div className="mt-4 flex items-center text-sm text-gray-500">
-              <i className="fas fa-layer-group mr-2"></i>
-              <span>{deckDetails.totalCards ?? 0} cards</span>
+          {isEditingDeck ? (
+            <div className="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="mb-4">
+                <label
+                  htmlFor="deckName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Deck Title
+                </label>
+                <input
+                  id="deckName"
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  value={deckEditData.name}
+                  onChange={(e) =>
+                    setDeckEditData((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="deckDescription"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Description
+                </label>
+                <textarea
+                  id="deckDescription"
+                  className="w-full h-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                  value={deckEditData.description}
+                  onChange={(e) =>
+                    setDeckEditData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={cancelDeckEdit}
+                  className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer !rounded-button whitespace-nowrap"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={saveDeckChanges}
+                  className="px-3 py-1.5 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 cursor-pointer !rounded-button whitespace-nowrap"
+                  disabled={!deckEditData?.name?.trim()}
+                >
+                  Save Changes
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mb-4">
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {deckDetails.name}
+                </h1>
+                <button
+                  onClick={setIsEditingDeck}
+                  className="text-indigo-600 hover:text-indigo-800 p-1 rounded-md cursor-pointer !rounded-button whitespace-nowrap"
+                >
+                  <i className="fas fa-edit mr-1"></i>
+                  Edit
+                </button>
+              </div>
+              <p className="mt-2 text-gray-600">{deckDetails.description}</p>
+              <div className="mt-4 flex items-center text-sm text-gray-500">
+                <i className="fas fa-layer-group mr-2"></i>
+                <span>{deckDetails.totalCards ?? 0} cards</span>
+              </div>
+            </div>
+          )}
           {/* Action Buttons */}
           <div className="mb-2 flex flex-wrap gap-3">
             <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
