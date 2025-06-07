@@ -13,10 +13,7 @@ function DeckPage() {
 
   // editing of Deck's details
   const [isEditingDeck, setIsEditingDeck] = useState(false);
-  const [deckEditData, setDeckEditData] = useState({
-    name: "",
-    description: "",
-  });
+  const [deckEditData, setDeckEditData] = useState({});
 
   // modal & form for new Card creation
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,12 +63,6 @@ function DeckPage() {
     fetchDeckDetails();
     fetchDeckCards();
 
-    setDeckEditData({
-      name: deckDetails.name,
-      description: deckDetails.description,
-    });
-    console.log("deckEditData:", deckEditData);
-
     return () => {
       isMounted = false;
       controller.abort();
@@ -85,7 +76,7 @@ function DeckPage() {
   };
 
   const handleEditDeck = () => {
-    setIsEditingDeck(false);
+    setIsEditingDeck(true);
     setDeckEditData({
       name: deckDetails.name,
       description: deckDetails.description,
@@ -359,7 +350,7 @@ function DeckPage() {
                   {deckDetails.name}
                 </h1>
                 <button
-                  onClick={setIsEditingDeck}
+                  onClick={handleEditDeck}
                   className="text-indigo-600 hover:text-indigo-800 p-1 rounded-md cursor-pointer !rounded-button whitespace-nowrap"
                 >
                   <i className="fas fa-edit mr-1"></i>
