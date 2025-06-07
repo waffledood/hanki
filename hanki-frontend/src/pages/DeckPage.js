@@ -93,7 +93,7 @@ function DeckPage() {
 
   const saveDeckChanges = () => {
     setDeckDetails({
-      ...deck,
+      ...deckDetails,
       name: deckEditData.name,
       description: deckEditData.description,
     });
@@ -167,14 +167,6 @@ function DeckPage() {
         })
         .catch((err) => console.error("Error:", err));
     }
-  };
-
-  // Sample deck data
-  const deck = {
-    name: "Advanced JavaScript Concepts",
-    description:
-      "Master modern JavaScript features, patterns, and best practices",
-    totalCards: 24,
   };
 
   // Sample cards data
