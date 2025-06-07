@@ -97,6 +97,27 @@ function DeckPage() {
       name: deckEditData.name,
       description: deckEditData.description,
     });
+
+    // send PATCH request
+    const controller = new AbortController();
+
+    const updateDeckDetails = async () => {
+      try {
+        const response = await axiosPrivate.patch(`/decks/${deckId}`, {
+          signal: controller.signal,
+          name: deckEditData.name,
+          description: deckEditData.description,
+        });
+        console.log("updateDeckDetails:", response);
+      } catch (err) {
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    updateDeckDetails();
+
+    controller.abort();
+
     setIsEditingDeck(false);
   };
 
