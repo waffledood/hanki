@@ -1,6 +1,7 @@
 package com.hanki.backend.controller;
 
 import com.hanki.backend.dto.DeckPostDto;
+import com.hanki.backend.dto.DeckUpdateDto;
 import com.hanki.backend.exception.DeckNotFoundException;
 import com.hanki.backend.model.Card;
 import com.hanki.backend.model.Deck;
@@ -50,6 +51,13 @@ public class DeckController {
     @GetMapping("/{id}")
     public Deck getDeckById(@PathVariable Integer id) {
         return deckService.findById(id).orElseThrow(() -> new DeckNotFoundException("Deck not found with id: " + id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Deck> updateDeck(@PathVariable Integer id, @Valid  @RequestBody DeckUpdateDto dto) {
+        Deck updatedDeck = deckService.updateDeck(id, dto);
+
+        return ResponseEntity.ok(updatedDeck);
     }
 
     @GetMapping("/{id}/cards")
