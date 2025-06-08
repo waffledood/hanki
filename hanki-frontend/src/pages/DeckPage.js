@@ -15,6 +15,10 @@ function DeckPage() {
   const [isEditingDeck, setIsEditingDeck] = useState(false);
   const [deckEditData, setDeckEditData] = useState({});
 
+  // editing of a Card's details
+  const [editingCardId, setEditingCardId] = useState();
+  const [cardEditData, setCardEditData] = useState({});
+
   // modal & form for new Card creation
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCardQuestion, setNewCardQuestion] = useState("");
@@ -122,51 +126,96 @@ function DeckPage() {
   };
 
   const handleCreateCard = () => {
-    let hasError = false;
-    const newErrors = { question: "", answer: "" };
+    // if the User is editing a Card, handle the edits
+    if (editingCardId !== null) {
+      // update local instance of Card
+      setDeckCards(
+        deckCards.map((card) =>
+          card.id === editingCardId
+            ? {
+                ...card,
+                question: cardEditData.question,
+                answer: cardEditData.answer,
+              }
+            : card
+        )
+      );
 
-    if (!newCardQuestion.trim()) {
-      newErrors.question = "Card question is required.";
-      hasError = true;
-    }
-
-    if (!newCardAnswer.trim()) {
-      newErrors.answer = "Card answer is required.";
-      hasError = true;
-    }
-
-    setErrors(newErrors);
-
-    if (!hasError) {
+      // send PATCH request
       const controller = new AbortController();
+      const updateCardDetails = async () => {
+        try {
+          const response = await axiosPrivate.patch(`/cards/${editingCardId}`, {
+            signal: controller.signal,
+            question: cardEditData.question,
+            answer: cardEditData.answer,
+          });
+          console.log(response);
+        } catch (err) {
+          navigate("/login", { from: location, state: true });
+        }
+      };
+      updateCardDetails();
+      controller.abort();
 
-      axiosPrivate
-        .post("cards", {
-          question: newCardQuestion,
-          answer: newCardAnswer,
-          deckId: deckId,
-          signal: controller.signal,
-        })
-        .then((res) => {
-          // log new Card
-          console.log("New Card created:", res.data);
+      setEditingCardId(null);
+      setCardEditData({ question: "", answer: "" });
+    } else {
+      let hasError = false;
+      const newErrors = { question: "", answer: "" };
 
-          // add new Card to existing list of Cards
-          setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+      if (!newCardQuestion.trim()) {
+        newErrors.question = "Card question is required.";
+        hasError = true;
+      }
 
-          // update count of Deck's cards
-          setDeckDetails((prev) => ({
-            ...prev,
-            totalCards: (prev.totalCards ?? 0) + 1,
-          }));
+      if (!newCardAnswer.trim()) {
+        newErrors.answer = "Card answer is required.";
+        hasError = true;
+      }
 
-          // cleanup by cancelling request
-          controller.abort();
+      setErrors(newErrors);
 
-          clearNewCardModal();
-        })
-        .catch((err) => console.error("Error:", err));
+      if (!hasError) {
+        const controller = new AbortController();
+
+        axiosPrivate
+          .post("cards", {
+            question: newCardQuestion,
+            answer: newCardAnswer,
+            deckId: deckId,
+            signal: controller.signal,
+          })
+          .then((res) => {
+            // log new Card
+            console.log("New Card created:", res.data);
+
+            // add new Card to existing list of Cards
+            setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+
+            // update count of Deck's cards
+            setDeckDetails((prev) => ({
+              ...prev,
+              totalCards: (prev.totalCards ?? 0) + 1,
+            }));
+
+            // cleanup by cancelling request
+            controller.abort();
+          })
+          .catch((err) => console.error("Error:", err));
+      }
     }
+
+    clearNewCardModal();
+  };
+
+  const handleEditCard = (card) => {
+    setEditingCardId(card.id);
+    setCardEditData({
+      question: card.question,
+      answer: card.answer,
+    });
+    setIsModalOpen(true);
   };
 
   // Sample cards data
@@ -249,11 +298,17 @@ function DeckPage() {
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="text-gray-700">{card.answer}</p>
                 <div className="mt-4 flex gap-2">
-                  <button className="text-indigo-600 hover:text-indigo-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+                  <button
+                    className="text-indigo-600 hover:text-indigo-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditCard(card);
+                    }}
+                  >
                     <i className="fas fa-edit mr-1"></i>
                     Edit
                   </button>
-                  <button className="text-red-600 hover:text-red-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+                  <button className="text-red-600 hover:text-red-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
                     <i className="fas fa-trash-alt mr-1"></i>
                     Delete
                   </button>
@@ -364,7 +419,7 @@ function DeckPage() {
                 </h1>
                 <button
                   onClick={handleEditDeck}
-                  className="text-indigo-600 hover:text-indigo-800 p-1 rounded-md cursor-pointer !rounded-button whitespace-nowrap"
+                  className="text-indigo-600 hover:text-indigo-800 p-1 rounded-md cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500"
                 >
                   <i className="fas fa-edit mr-1"></i>
                   Edit
@@ -421,7 +476,7 @@ function DeckPage() {
           <div className="bg-white rounded-lg w-full max-w-2xl mx-4 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <h3 className="text-xl font-semibold text-gray-900">
-                Add New Card
+                {editingCardId !== null ? "Edit Card" : "Add New Card"}
               </h3>
               <button
                 onClick={() => {
@@ -447,8 +502,19 @@ function DeckPage() {
                     errors.question ? "border-red-500 focus:ring-red-500" : ""
                   }`}
                   placeholder="Enter your question"
-                  value={newCardQuestion}
-                  onChange={(e) => setNewCardQuestion(e.target.value)}
+                  value={
+                    editingCardId !== null
+                      ? cardEditData.question
+                      : newCardQuestion
+                  }
+                  onChange={(e) =>
+                    editingCardId !== null
+                      ? setCardEditData((prev) => ({
+                          ...prev,
+                          question: e.target.value,
+                        }))
+                      : setNewCardQuestion(e.target.value)
+                  }
                 />
                 {errors.question && (
                   <p className="text-red-500 text-sm mt-1">{errors.question}</p>
@@ -468,8 +534,17 @@ function DeckPage() {
                     errors.answer ? "border-red-500 focus:ring-red-500" : ""
                   }`}
                   placeholder="Enter your answer"
-                  value={newCardAnswer}
-                  onChange={(e) => setNewCardAnswer(e.target.value)}
+                  value={
+                    editingCardId !== null ? cardEditData.answer : newCardAnswer
+                  }
+                  onChange={(e) => {
+                    editingCardId !== null
+                      ? setCardEditData((prev) => ({
+                          ...prev,
+                          answer: e.target.value,
+                        }))
+                      : setNewCardAnswer(e.target.value);
+                  }}
                 />
                 {errors.answer && (
                   <p className="text-red-500 text-sm mt-1">{errors.answer}</p>
@@ -491,7 +566,7 @@ function DeckPage() {
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed !rounded-button whitespace-nowrap cursor-pointer"
                 // disabled={!newCardQuestion.trim() || !newCardAnswer.trim()}
               >
-                Add Card
+                {editingCardId !== null ? "Save Changes" : "Add Card"}
               </button>
             </div>
           </div>
