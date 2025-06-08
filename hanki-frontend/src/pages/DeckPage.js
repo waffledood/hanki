@@ -11,6 +11,14 @@ function DeckPage() {
   const [deckDetails, setDeckDetails] = useState({});
   const [deckCards, setDeckCards] = useState([]);
 
+  // editing of Deck's details
+  const [isEditingDeck, setIsEditingDeck] = useState(false);
+  const [deckEditData, setDeckEditData] = useState({});
+
+  // editing of a Card's details
+  const [editingCardId, setEditingCardId] = useState();
+  const [cardEditData, setCardEditData] = useState({});
+
   // modal & form for new Card creation
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCardQuestion, setNewCardQuestion] = useState("");
@@ -71,101 +79,144 @@ function DeckPage() {
     setNewCardAnswer("");
   };
 
-  const handleCreateCard = () => {
-    let hasError = false;
-    const newErrors = { question: "", answer: "" };
+  const handleEditDeck = () => {
+    setIsEditingDeck(true);
+    setDeckEditData({
+      name: deckDetails.name,
+      description: deckDetails.description,
+    });
+  };
 
-    if (!newCardQuestion.trim()) {
-      newErrors.question = "Card question is required.";
-      hasError = true;
-    }
+  const cancelDeckEdit = () => {
+    setIsEditingDeck(false);
+    setDeckEditData({
+      name: deckDetails.name,
+      description: deckDetails.description,
+    });
+  };
 
-    if (!newCardAnswer.trim()) {
-      newErrors.answer = "Card answer is required.";
-      hasError = true;
-    }
+  const saveDeckChanges = () => {
+    setDeckDetails({
+      ...deckDetails,
+      name: deckEditData.name,
+      description: deckEditData.description,
+    });
 
-    setErrors(newErrors);
+    // send PATCH request
+    const controller = new AbortController();
 
-    if (!hasError) {
-      const controller = new AbortController();
-
-      axiosPrivate
-        .post("cards", {
-          question: newCardQuestion,
-          answer: newCardAnswer,
-          deckId: deckId,
+    const updateDeckDetails = async () => {
+      try {
+        const response = await axiosPrivate.patch(`/decks/${deckId}`, {
           signal: controller.signal,
-        })
-        .then((res) => {
-          // log new Card
-          console.log("New Card created:", res.data);
+          name: deckEditData.name,
+          description: deckEditData.description,
+        });
+        console.log("updateDeckDetails:", response);
+      } catch (err) {
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
 
-          // add new Card to existing list of Cards
-          setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+    updateDeckDetails();
 
-          // update count of Deck's cards
-          setDeckDetails((prev) => ({
-            ...prev,
-            totalCards: (prev.totalCards ?? 0) + 1,
-          }));
+    controller.abort();
 
-          // cleanup by cancelling request
-          controller.abort();
+    setIsEditingDeck(false);
+  };
 
-          clearNewCardModal();
-        })
-        .catch((err) => console.error("Error:", err));
+  const handleCreateCard = () => {
+    // if the User is editing a Card, handle the edits
+    if (editingCardId !== null) {
+      // update local instance of Card
+      setDeckCards(
+        deckCards.map((card) =>
+          card.id === editingCardId
+            ? {
+                ...card,
+                question: cardEditData.question,
+                answer: cardEditData.answer,
+              }
+            : card
+        )
+      );
+
+      // send PATCH request
+      const controller = new AbortController();
+      const updateCardDetails = async () => {
+        try {
+          const response = await axiosPrivate.patch(`/cards/${editingCardId}`, {
+            signal: controller.signal,
+            question: cardEditData.question,
+            answer: cardEditData.answer,
+          });
+          console.log(response);
+        } catch (err) {
+          navigate("/login", { from: location, state: true });
+        }
+      };
+      updateCardDetails();
+      controller.abort();
+
+      setEditingCardId(null);
+      setCardEditData({ question: "", answer: "" });
+    } else {
+      let hasError = false;
+      const newErrors = { question: "", answer: "" };
+
+      if (!newCardQuestion.trim()) {
+        newErrors.question = "Card question is required.";
+        hasError = true;
+      }
+
+      if (!newCardAnswer.trim()) {
+        newErrors.answer = "Card answer is required.";
+        hasError = true;
+      }
+
+      setErrors(newErrors);
+
+      if (!hasError) {
+        const controller = new AbortController();
+
+        axiosPrivate
+          .post("cards", {
+            question: newCardQuestion,
+            answer: newCardAnswer,
+            deckId: deckId,
+            signal: controller.signal,
+          })
+          .then((res) => {
+            // log new Card
+            console.log("New Card created:", res.data);
+
+            // add new Card to existing list of Cards
+            setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+
+            // update count of Deck's cards
+            setDeckDetails((prev) => ({
+              ...prev,
+              totalCards: (prev.totalCards ?? 0) + 1,
+            }));
+
+            // cleanup by cancelling request
+            controller.abort();
+          })
+          .catch((err) => console.error("Error:", err));
+      }
     }
+
+    clearNewCardModal();
   };
 
-  // Sample deck data
-  const deck = {
-    name: "Advanced JavaScript Concepts",
-    description:
-      "Master modern JavaScript features, patterns, and best practices",
-    totalCards: 24,
+  const handleEditCard = (card) => {
+    setEditingCardId(card.id);
+    setCardEditData({
+      question: card.question,
+      answer: card.answer,
+    });
+    setIsModalOpen(true);
   };
-
-  // Sample cards data
-  const cards = [
-    {
-      id: 1,
-      question: "What is a closure in JavaScript?",
-      answer:
-        "A closure is the combination of a function bundled together with references to its surrounding state (the lexical environment). In JavaScript, closures are created every time a function is created, at function creation time.",
-    },
-    {
-      id: 2,
-      question: "Explain the difference between let, const, and var",
-      answer:
-        "var is function-scoped and can be redeclared and updated. let is block-scoped and can be updated but not redeclared. const is block-scoped and cannot be updated or redeclared after initialization.",
-    },
-    {
-      id: 3,
-      question: "What is the event loop in JavaScript?",
-      answer:
-        "The event loop is a programming construct that waits for and dispatches events in a program. It works by making a request to some internal or external event provider, then calls the relevant event handler.",
-    },
-    {
-      id: 4,
-      question: "What are Promises in JavaScript?",
-      answer:
-        "Promises are objects representing the eventual completion or failure of an asynchronous operation. They allow you to attach callbacks to handle the success or failure of the async operation instead of passing callbacks into functions.",
-    },
-    {
-      id: 5,
-      question: "Explain prototypal inheritance in JavaScript",
-      answer:
-        "Prototypal inheritance is a feature in JavaScript where objects can inherit properties and methods from other objects. Each object has an internal link to another object called its prototype. That prototype object has a prototype of its own, and so on.",
-    },
-    {
-      id: 6,
-      question: "What is the difference between == and === operators?",
-      answer:
-        "The == (equality) operator checks for value equality after converting both values to a common type. The === (strict equality) operator checks for both value and type equality without type conversion.",
-    },
-  ];
 
   const toggleCardExpansion = (id) => {
     if (expandedCardId === id) {
@@ -207,11 +258,17 @@ function DeckPage() {
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="text-gray-700">{card.answer}</p>
                 <div className="mt-4 flex gap-2">
-                  <button className="text-indigo-600 hover:text-indigo-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+                  <button
+                    className="text-indigo-600 hover:text-indigo-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditCard(card);
+                    }}
+                  >
                     <i className="fas fa-edit mr-1"></i>
                     Edit
                   </button>
-                  <button className="text-red-600 hover:text-red-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+                  <button className="text-red-600 hover:text-red-800 text-sm flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
                     <i className="fas fa-trash-alt mr-1"></i>
                     Delete
                   </button>
@@ -257,16 +314,84 @@ function DeckPage() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col">
         {/* Deck Information - Fixed/Floating Section */}
         <div className="sticky top-16 bg-gray-50 pt-4 pb-6 z-9">
-          <div className="mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">
-              {deckDetails.name}
-            </h1>
-            <p className="mt-2 text-gray-600">{deckDetails.description}</p>
-            <div className="mt-4 flex items-center text-sm text-gray-500">
-              <i className="fas fa-layer-group mr-2"></i>
-              <span>{deckDetails.totalCards ?? 0} cards</span>
+          {isEditingDeck ? (
+            <div className="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+              <div className="mb-4">
+                <label
+                  htmlFor="deckName"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Deck Title
+                </label>
+                <input
+                  id="deckName"
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  value={deckEditData.name}
+                  onChange={(e) =>
+                    setDeckEditData((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="deckDescription"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Description
+                </label>
+                <textarea
+                  id="deckDescription"
+                  className="w-full h-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                  value={deckEditData.description}
+                  onChange={(e) =>
+                    setDeckEditData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={cancelDeckEdit}
+                  className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer !rounded-button whitespace-nowrap"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={saveDeckChanges}
+                  className="px-3 py-1.5 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 cursor-pointer !rounded-button whitespace-nowrap"
+                  disabled={!deckEditData?.name?.trim()}
+                >
+                  Save Changes
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mb-4">
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {deckDetails.name}
+                </h1>
+                <button
+                  onClick={handleEditDeck}
+                  className="text-indigo-600 hover:text-indigo-800 p-1 rounded-md cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500"
+                >
+                  <i className="fas fa-edit mr-1"></i>
+                  Edit
+                </button>
+              </div>
+              <p className="mt-2 text-gray-600">{deckDetails.description}</p>
+              <div className="mt-4 flex items-center text-sm text-gray-500">
+                <i className="fas fa-layer-group mr-2"></i>
+                <span>{deckDetails.totalCards ?? 0} cards</span>
+              </div>
+            </div>
+          )}
           {/* Action Buttons */}
           <div className="mb-2 flex flex-wrap gap-3">
             <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
@@ -311,7 +436,7 @@ function DeckPage() {
           <div className="bg-white rounded-lg w-full max-w-2xl mx-4 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <h3 className="text-xl font-semibold text-gray-900">
-                Add New Card
+                {editingCardId !== null ? "Edit Card" : "Add New Card"}
               </h3>
               <button
                 onClick={() => {
@@ -337,8 +462,19 @@ function DeckPage() {
                     errors.question ? "border-red-500 focus:ring-red-500" : ""
                   }`}
                   placeholder="Enter your question"
-                  value={newCardQuestion}
-                  onChange={(e) => setNewCardQuestion(e.target.value)}
+                  value={
+                    editingCardId !== null
+                      ? cardEditData.question
+                      : newCardQuestion
+                  }
+                  onChange={(e) =>
+                    editingCardId !== null
+                      ? setCardEditData((prev) => ({
+                          ...prev,
+                          question: e.target.value,
+                        }))
+                      : setNewCardQuestion(e.target.value)
+                  }
                 />
                 {errors.question && (
                   <p className="text-red-500 text-sm mt-1">{errors.question}</p>
@@ -358,8 +494,17 @@ function DeckPage() {
                     errors.answer ? "border-red-500 focus:ring-red-500" : ""
                   }`}
                   placeholder="Enter your answer"
-                  value={newCardAnswer}
-                  onChange={(e) => setNewCardAnswer(e.target.value)}
+                  value={
+                    editingCardId !== null ? cardEditData.answer : newCardAnswer
+                  }
+                  onChange={(e) => {
+                    editingCardId !== null
+                      ? setCardEditData((prev) => ({
+                          ...prev,
+                          answer: e.target.value,
+                        }))
+                      : setNewCardAnswer(e.target.value);
+                  }}
                 />
                 {errors.answer && (
                   <p className="text-red-500 text-sm mt-1">{errors.answer}</p>
@@ -381,7 +526,7 @@ function DeckPage() {
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed !rounded-button whitespace-nowrap cursor-pointer"
                 // disabled={!newCardQuestion.trim() || !newCardAnswer.trim()}
               >
-                Add Card
+                {editingCardId !== null ? "Save Changes" : "Add Card"}
               </button>
             </div>
           </div>

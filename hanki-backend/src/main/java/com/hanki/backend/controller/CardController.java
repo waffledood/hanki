@@ -1,6 +1,7 @@
 package com.hanki.backend.controller;
 
 import com.hanki.backend.dto.CardPostDto;
+import com.hanki.backend.dto.CardUpdateDto;
 import com.hanki.backend.exception.CardNotFoundException;
 import com.hanki.backend.model.Card;
 import com.hanki.backend.model.User;
@@ -41,6 +42,12 @@ public class CardController {
     @GetMapping("/{id}")
     public Card getCardById(@PathVariable Integer id) {
         return cardService.findById(id).orElseThrow(() -> new CardNotFoundException("Card not found with id: " + id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Card> patchCard(@PathVariable Integer id, @Valid @RequestBody CardUpdateDto dto) {
+        Card updatedCard = cardService.updateCard(id, dto);
+        return ResponseEntity.ok(updatedCard);
     }
 
     @ExceptionHandler(CardNotFoundException.class)

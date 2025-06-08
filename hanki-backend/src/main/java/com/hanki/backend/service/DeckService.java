@@ -1,11 +1,13 @@
 package com.hanki.backend.service;
 
 import com.hanki.backend.dto.DeckPostDto;
+import com.hanki.backend.dto.DeckUpdateDto;
 import com.hanki.backend.model.Deck;
 import com.hanki.backend.model.User;
 import com.hanki.backend.repository.DeckRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,5 +54,22 @@ public class DeckService {
         deck.setOwner(user);
 
         return deckRepository.save(deck);
+    }
+
+    public Deck updateDeck(Integer id, DeckUpdateDto dto) {
+        Deck deck = deckRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Deck not found"));
+
+        if (dto.getName() != null) {
+            deck.setName(dto.getName());
+        }
+
+        if (dto.getDescription() != null) {
+            deck.setDescription(dto.getDescription());
+        }
+
+        deck = deckRepository.save(deck);
+
+        return deck;
     }
 }
