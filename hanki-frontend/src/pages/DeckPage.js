@@ -218,46 +218,6 @@ function DeckPage() {
     setIsModalOpen(true);
   };
 
-  // Sample cards data
-  const cards = [
-    {
-      id: 1,
-      question: "What is a closure in JavaScript?",
-      answer:
-        "A closure is the combination of a function bundled together with references to its surrounding state (the lexical environment). In JavaScript, closures are created every time a function is created, at function creation time.",
-    },
-    {
-      id: 2,
-      question: "Explain the difference between let, const, and var",
-      answer:
-        "var is function-scoped and can be redeclared and updated. let is block-scoped and can be updated but not redeclared. const is block-scoped and cannot be updated or redeclared after initialization.",
-    },
-    {
-      id: 3,
-      question: "What is the event loop in JavaScript?",
-      answer:
-        "The event loop is a programming construct that waits for and dispatches events in a program. It works by making a request to some internal or external event provider, then calls the relevant event handler.",
-    },
-    {
-      id: 4,
-      question: "What are Promises in JavaScript?",
-      answer:
-        "Promises are objects representing the eventual completion or failure of an asynchronous operation. They allow you to attach callbacks to handle the success or failure of the async operation instead of passing callbacks into functions.",
-    },
-    {
-      id: 5,
-      question: "Explain prototypal inheritance in JavaScript",
-      answer:
-        "Prototypal inheritance is a feature in JavaScript where objects can inherit properties and methods from other objects. Each object has an internal link to another object called its prototype. That prototype object has a prototype of its own, and so on.",
-    },
-    {
-      id: 6,
-      question: "What is the difference between == and === operators?",
-      answer:
-        "The == (equality) operator checks for value equality after converting both values to a common type. The === (strict equality) operator checks for both value and type equality without type conversion.",
-    },
-  ];
-
   const toggleCardExpansion = (id) => {
     if (expandedCardId === id) {
       setExpandedCardId(null);
