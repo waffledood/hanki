@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
+import Navbar from "../layout/Navbar";
 
-import { apiRequest } from "../utils/fetch";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 function DeckPage() {
@@ -15,6 +15,9 @@ function DeckPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCardQuestion, setNewCardQuestion] = useState("");
   const [newCardAnswer, setNewCardAnswer] = useState("");
+
+  // errors for creation of new Card
+  const [errors, setErrors] = useState({ question: "", answer: "" });
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -69,34 +72,51 @@ function DeckPage() {
   };
 
   const handleCreateCard = () => {
-    const controller = new AbortController();
+    let hasError = false;
+    const newErrors = { question: "", answer: "" };
 
-    axiosPrivate
-      .post("cards", {
-        question: newCardQuestion,
-        answer: newCardAnswer,
-        deckId: deckId,
-        signal: controller.signal,
-      })
-      .then((res) => {
-        // log new Card
-        console.log("New Card created:", res.data);
+    if (!newCardQuestion.trim()) {
+      newErrors.question = "Card question is required.";
+      hasError = true;
+    }
 
-        // add new Card to existing list of Cards
-        setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+    if (!newCardAnswer.trim()) {
+      newErrors.answer = "Card answer is required.";
+      hasError = true;
+    }
 
-        // update count of Deck's cards
-        setDeckDetails((prev) => ({
-          ...prev,
-          totalCards: (prev.totalCards ?? 0) + 1,
-        }));
+    setErrors(newErrors);
 
-        // cleanup by cancelling request
-        controller.abort();
+    if (!hasError) {
+      const controller = new AbortController();
 
-        clearNewCardModal();
-      })
-      .catch((err) => console.error("Error:", err));
+      axiosPrivate
+        .post("cards", {
+          question: newCardQuestion,
+          answer: newCardAnswer,
+          deckId: deckId,
+          signal: controller.signal,
+        })
+        .then((res) => {
+          // log new Card
+          console.log("New Card created:", res.data);
+
+          // add new Card to existing list of Cards
+          setDeckCards((prevDeckCards) => [...prevDeckCards, res.data]);
+
+          // update count of Deck's cards
+          setDeckDetails((prev) => ({
+            ...prev,
+            totalCards: (prev.totalCards ?? 0) + 1,
+          }));
+
+          // cleanup by cancelling request
+          controller.abort();
+
+          clearNewCardModal();
+        })
+        .catch((err) => console.error("Error:", err));
+    }
   };
 
   // Sample deck data
@@ -231,27 +251,10 @@ function DeckPage() {
 
   return (
     <MainLayout>
-      {/* Header */}
-      <header className="bg-white shadow-sm fixed top-0 left-0 right-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center">
-            <Link to="/">
-              <button className="text-gray-600 hover:text-gray-900 cursor-pointer !rounded-button whitespace-nowrap">
-                <i className="fas fa-arrow-left mr-2"></i>
-                Back to Decks
-              </button>
-            </Link>
-          </div>
-          <div className="flex items-center">
-            <button className="text-gray-600 hover:text-gray-900 p-2 rounded-full cursor-pointer !rounded-button whitespace-nowrap">
-              <i className="fas fa-ellipsis-v"></i>
-            </button>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24 flex flex-col">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col">
         {/* Deck Information - Fixed/Floating Section */}
         <div className="sticky top-16 bg-gray-50 pt-4 pb-6 z-9">
           <div className="mb-4">
@@ -266,19 +269,19 @@ function DeckPage() {
           </div>
           {/* Action Buttons */}
           <div className="mb-2 flex flex-wrap gap-3">
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
               <i className="fas fa-book-open mr-2"></i>
               Study Now
             </button>
-            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
               <i className="fas fa-random mr-2"></i>
               Shuffle
             </button>
-            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
               <i className="fas fa-sort mr-2"></i>
               Sort
             </button>
-            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap">
+            <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
               <i className="fas fa-filter mr-2"></i>
               Filter
             </button>
@@ -296,7 +299,7 @@ function DeckPage() {
       <div className="fixed bottom-8 right-8">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button whitespace-nowrap"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500"
         >
           <i className="fas fa-plus text-xl"></i>
         </button>
@@ -330,11 +333,16 @@ function DeckPage() {
                 </label>
                 <textarea
                   id="question"
-                  className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto"
+                  className={`w-full h-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto ${
+                    errors.question ? "border-red-500 focus:ring-red-500" : ""
+                  }`}
                   placeholder="Enter your question"
                   value={newCardQuestion}
                   onChange={(e) => setNewCardQuestion(e.target.value)}
                 />
+                {errors.question && (
+                  <p className="text-red-500 text-sm mt-1">{errors.question}</p>
+                )}
               </div>
 
               <div className="mb-6">
@@ -346,11 +354,16 @@ function DeckPage() {
                 </label>
                 <textarea
                   id="answer"
-                  className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto"
+                  className={`w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none overflow-y-auto ${
+                    errors.answer ? "border-red-500 focus:ring-red-500" : ""
+                  }`}
                   placeholder="Enter your answer"
                   value={newCardAnswer}
                   onChange={(e) => setNewCardAnswer(e.target.value)}
                 />
+                {errors.answer && (
+                  <p className="text-red-500 text-sm mt-1">{errors.answer}</p>
+                )}
               </div>
             </div>
 
@@ -366,7 +379,7 @@ function DeckPage() {
               <button
                 onClick={() => handleCreateCard()}
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed !rounded-button whitespace-nowrap cursor-pointer"
-                disabled={!newCardQuestion.trim() || !newCardAnswer.trim()}
+                // disabled={!newCardQuestion.trim() || !newCardAnswer.trim()}
               >
                 Add Card
               </button>

@@ -341,11 +341,7 @@ function Home() {
                 value={newDeckName}
                 onChange={(e) => setNewDeckName(e.target.value)}
                 className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500
-                  ${
-                    errors.name
-                      ? "border-red-500 focus:ring-red-500"
-                      : "focus:ring-blue-500"
-                  }
+                  ${errors.name ? "border-red-500 focus:ring-red-500" : ""}
                 `}
               />
               {errors.name && (
@@ -362,7 +358,7 @@ function Home() {
                   ${
                     errors.description
                       ? "border-red-500 focus:ring-red-500"
-                      : "focus:ring-blue-500"
+                      : ""
                   }
                 `}
               />
