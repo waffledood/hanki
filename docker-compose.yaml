@@ -2,7 +2,7 @@ version: "3.8"
 services:
   # DB
   db:
-    image: postgres
+    image: postgres:latest
     restart: always
     ports:
       - 5433:5433
