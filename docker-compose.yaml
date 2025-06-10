@@ -16,3 +16,6 @@ services:
   # Backend
 
   # Frontend
+
+volumes:
+  pgdata:
