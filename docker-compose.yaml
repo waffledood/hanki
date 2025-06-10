@@ -1,0 +1,18 @@
+version: "0.1"
+services:
+  # DB
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5433:5433
+    environment:
+      POSTGRESQL_USER: hanki_app
+      POSTGRES_PASSWORD: supersecurepassword
+      POSTGRESQL_DATABASE: hanki
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # Backend
+
+  # Frontend
