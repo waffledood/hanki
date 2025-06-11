@@ -19,7 +19,7 @@ services:
       context: ./hanki-backend # Path to the directory containing your Spring Boot project and Dockerfile
       dockerfile: Dockerfile # Name of the Dockerfile (optional, defaults to Dockerfile)
     ports:
-      - "8080:8080" # Map host port 8080 to container port 8080
+      - 8080:8080 # Map host port 8080 to container port 8080
     environment:
       # Spring Boot application properties for connecting to the database
       # Make sure these match your application's configuration expectations
