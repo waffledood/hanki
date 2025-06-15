@@ -47,7 +47,21 @@ services:
       # If you use the `build` context, Docker Compose will handle copying the JAR during the build process,
       # so this specific volume mount might be redundant unless you want to override the JAR after the initial build.
 
-  # Frontend
+  # React Frontend
+  frontend:
+    build:
+      context: ./hanki-frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_BACKEND_URL: http://backend:8080
+    volumes:
+      - ./hanki-frontend:/app
+      - /app/node_modules
+    restart: on-failure
 
 volumes:
   pgdata:
