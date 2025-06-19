@@ -77,6 +77,7 @@ function DeckPage() {
     setIsModalOpen(false);
     setNewCardQuestion("");
     setNewCardAnswer("");
+    setEditingCardId(null);
   };
 
   const handleEditDeck = () => {
