@@ -7,9 +7,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRESQL_USER: hanki_app
+      POSTGRES_USER: hanki_app
       POSTGRES_PASSWORD: supersecurepassword
-      POSTGRESQL_DATABASE: hanki
+      POSTGRES_DB: hanki
     volumes:
       - pgdata:/var/lib/postgresql/data
 
