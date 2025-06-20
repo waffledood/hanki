@@ -26,6 +26,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/hanki # 'db' is the service name in Docker Compose
       SPRING_DATASOURCE_USERNAME: hanki_app
       SPRING_DATASOURCE_PASSWORD: supersecurepassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       # Add any other Spring Boot environment variables your app needs (e.g., logging level, other API keys)
       # SPRING_PROFILES_ACTIVE: docker
     depends_on:
