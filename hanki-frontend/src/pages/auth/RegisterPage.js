@@ -47,7 +47,7 @@ function RegisterPage() {
 
     // Send POST request when all required fields are present
     if (Object.keys(newErrors).length === 0) {
-      apiRequest("users/register", "POST", {
+      apiRequest("auth/register", "POST", {
         email: email,
         username: username,
         password: password,
