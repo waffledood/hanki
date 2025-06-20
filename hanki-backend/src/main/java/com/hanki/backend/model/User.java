@@ -2,6 +2,9 @@ package com.hanki.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -15,6 +18,8 @@ public class User {
     private Integer id;
 
     @Column(columnDefinition = "uuid", updatable = false, insertable = false, nullable = false)
+    @ColumnDefault("gen_random_uuid()")
+    @JdbcTypeCode(SqlTypes.UUID)
     private UUID uuid;
 
     @Column(nullable = false, unique = true, length = 50)
