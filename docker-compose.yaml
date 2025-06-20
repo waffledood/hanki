@@ -36,15 +36,6 @@ services:
     #   interval: 30s
     #   timeout: 10s
     #   retries: 5
-    volumes:
-      # Optional: If you need to mount a specific application.yaml/properties file from host
-      # - ./backend/src/main/resources/application-docker.yaml:/app/BOOT-INF/classes/application.yaml
-      # However, environment variables are usually preferred for runtime config in Docker.
-      - ./backend/target/your-spring-boot-app.jar:/app/app.jar # If you want to use a locally built jar directly without full rebuild context
-      # This is useful for faster development cycles where only the JAR changes.
-      # Make sure the left side points to your actual JAR path after a build.
-      # If you use the `build` context, Docker Compose will handle copying the JAR during the build process,
-      # so this specific volume mount might be redundant unless you want to override the JAR after the initial build.
     restart: on-failure # Or 'always', depending on your preference
 
   # React Frontend
