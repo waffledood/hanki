@@ -37,11 +37,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserPostDto userPostDto, HttpServletResponse response) {
-        boolean isUsernameTaken = authService.userExists(userPostDto.getUsername());
+        boolean isUsernameTaken = authService.userWithEmailExists(userPostDto.getUsername());
+        boolean isEmailTaken = authService.userWithEmailExists(userPostDto.getEmail());
 
-        if (isUsernameTaken) {
+        if (isUsernameTaken || isEmailTaken) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Map.of("error", "Username already taken"));
+                    .body(Map.of("error", "Username and/or Email is already taken"));
         } else {
             User user = authService.registerUser(userPostDto);
 
