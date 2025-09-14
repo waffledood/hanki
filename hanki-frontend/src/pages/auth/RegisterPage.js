@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useAuth from "../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 
 import { apiRequest } from "../../utils/fetch";
@@ -13,6 +14,8 @@ function RegisterPage() {
   const [agreeTerms, setAgreeTerms] = useState(false);
 
   const navigate = useNavigate();
+
+  const { setAuth } = useAuth();
 
   const getPasswordStrength = (password) => {
     if (!password) return 0;
@@ -61,8 +64,11 @@ function RegisterPage() {
         .then((data) => {
           console.log(data);
 
+          const accessToken = data?.access_token;
+          setAuth({ username, password, accessToken });
+
           // Redirect to Home page on successful registration
-          navigate("/");
+          navigate("/", { replace: true });
         })
         .catch((err) => {
           console.error("Error:", err);
