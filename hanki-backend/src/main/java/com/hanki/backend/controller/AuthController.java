@@ -36,12 +36,17 @@ public class AuthController {
     JwtProperties jwtProperties;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> registerUser(@Valid @RequestBody UserPostDto userPostDto) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserPostDto userPostDto) {
         User user = authService.registerUser(userPostDto);
 
         UserResponseDto userResponseDto = new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                Map.of(
+                        "message", "User registered successfully",
+                        "user", userResponseDto
+                )
+        );
     }
 
     @PostMapping("/login")
