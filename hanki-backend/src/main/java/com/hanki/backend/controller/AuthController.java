@@ -36,17 +36,40 @@ public class AuthController {
     JwtProperties jwtProperties;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UserPostDto userPostDto) {
-        User user = authService.registerUser(userPostDto);
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UserPostDto userPostDto, HttpServletResponse response) {
+        boolean isUsernameTaken = authService.userExists(userPostDto.getUsername());
 
-        UserResponseDto userResponseDto = new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
+        if (isUsernameTaken) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("error", "Username already taken"));
+        } else {
+            User user = authService.registerUser(userPostDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                Map.of(
-                        "message", "User registered successfully",
-                        "user", userResponseDto
-                )
-        );
+            UserResponseDto userResponseDto = new UserResponseDto(user.getId(), user.getUsername(), user.getEmail());
+
+            long currentTime = System.currentTimeMillis();
+            String username = userPostDto.getUsername();
+
+            String accessToken = jwtService.generateAccessToken(currentTime, username);
+            String refreshToken = jwtService.generateRefreshToken(currentTime, username);
+
+            // Set the cookie using HttpServletResponse
+            Cookie cookie = new Cookie("jwt", refreshToken);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(jwtProperties.getRefreshTokenExpirationDays() * 24 * 60 * 60);
+            cookie.setAttribute("SameSite", "None");
+            response.addCookie(cookie);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    Map.of(
+                            "message", "User registered successfully",
+                            "user", userResponseDto,
+                            JwtConstants.ACCESS_TOKEN.getValue(), accessToken
+                    )
+            );
+        }
     }
 
     @PostMapping("/login")
