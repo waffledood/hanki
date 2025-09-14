@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class AuthService {
@@ -35,9 +36,13 @@ public class AuthService {
         user.setPassword(encoder.encode(userPostDto.getPassword()));
         user.setEmail(userPostDto.getEmail());
 
-        // TODO - check for presence of combination of username & password
-
         return userRepository.save(user);
+    }
+
+    public boolean userExists(String username) {
+        User userWithRequestedUsername = userRepository.findByUsername(username);
+
+        return !Objects.equals(userWithRequestedUsername, null);
     }
 
     public boolean isUserVerified(UserLoginDto userLoginDto) throws AuthenticationException {
