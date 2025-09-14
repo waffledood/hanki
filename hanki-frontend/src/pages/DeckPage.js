@@ -16,7 +16,8 @@ function DeckPage() {
   const [deckEditData, setDeckEditData] = useState({});
 
   // editing of a Card's details
-  const [editingCardId, setEditingCardId] = useState(null);
+  const editingCardIdInitialState = null;
+  const [editingCardId, setEditingCardId] = useState(editingCardIdInitialState);
   const [cardEditData, setCardEditData] = useState({});
 
   // modal & form for new Card creation
@@ -127,7 +128,7 @@ function DeckPage() {
 
   const handleCreateCard = () => {
     // if the User is editing a Card, handle the edits
-    if (editingCardId !== null) {
+    if (editingCardId !== editingCardIdInitialState) {
       // update local instance of Card
       setDeckCards(
         deckCards.map((card) =>
@@ -158,7 +159,7 @@ function DeckPage() {
       updateCardDetails();
       controller.abort();
 
-      setEditingCardId(null);
+      setEditingCardId(editingCardIdInitialState);
       setCardEditData({ question: "", answer: "" });
     } else {
       let hasError = false;
@@ -436,7 +437,9 @@ function DeckPage() {
           <div className="bg-white rounded-lg w-full max-w-2xl mx-4 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
               <h3 className="text-xl font-semibold text-gray-900">
-                {editingCardId !== null ? "Edit Card" : "Add New Card"}
+                {editingCardId !== editingCardIdInitialState
+                  ? "Edit Card"
+                  : "Add New Card"}
               </h3>
               <button
                 onClick={() => {
@@ -463,12 +466,12 @@ function DeckPage() {
                   }`}
                   placeholder="Enter your question"
                   value={
-                    editingCardId !== null
+                    editingCardId !== editingCardIdInitialState
                       ? cardEditData.question
                       : newCardQuestion
                   }
                   onChange={(e) =>
-                    editingCardId !== null
+                    editingCardId !== editingCardIdInitialState
                       ? setCardEditData((prev) => ({
                           ...prev,
                           question: e.target.value,
@@ -495,10 +498,12 @@ function DeckPage() {
                   }`}
                   placeholder="Enter your answer"
                   value={
-                    editingCardId !== null ? cardEditData.answer : newCardAnswer
+                    editingCardId !== editingCardIdInitialState
+                      ? cardEditData.answer
+                      : newCardAnswer
                   }
                   onChange={(e) => {
-                    editingCardId !== null
+                    editingCardId !== editingCardIdInitialState
                       ? setCardEditData((prev) => ({
                           ...prev,
                           answer: e.target.value,
@@ -526,7 +531,9 @@ function DeckPage() {
                 className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed !rounded-button whitespace-nowrap cursor-pointer"
                 // disabled={!newCardQuestion.trim() || !newCardAnswer.trim()}
               >
-                {editingCardId !== null ? "Save Changes" : "Add Card"}
+                {editingCardId !== editingCardIdInitialState
+                  ? "Save Changes"
+                  : "Add Card"}
               </button>
             </div>
           </div>
