@@ -39,10 +39,16 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public boolean userExists(String username) {
+    public boolean userWithUsernameExists(String username) {
         User userWithRequestedUsername = userRepository.findByUsername(username);
 
         return !Objects.equals(userWithRequestedUsername, null);
+    }
+
+    public boolean userWithEmailExists(String email) {
+        User userWithRequestedEmail = userRepository.findByEmail(email);
+
+        return !Objects.equals(userWithRequestedEmail, null);
     }
 
     public boolean isUserVerified(UserLoginDto userLoginDto) throws AuthenticationException {
