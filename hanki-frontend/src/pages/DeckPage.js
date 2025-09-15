@@ -16,7 +16,7 @@ function DeckPage() {
   const [deckEditData, setDeckEditData] = useState({});
 
   // editing of a Card's details
-  const [editingCardId, setEditingCardId] = useState();
+  const [editingCardId, setEditingCardId] = useState(null);
   const [cardEditData, setCardEditData] = useState({});
 
   // modal & form for new Card creation
@@ -77,6 +77,7 @@ function DeckPage() {
     setIsModalOpen(false);
     setNewCardQuestion("");
     setNewCardAnswer("");
+    setEditingCardId(null);
   };
 
   const handleEditDeck = () => {
