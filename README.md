@@ -59,4 +59,4 @@ To start the entire Hanki application (backend, frontend, and database) using Do
 - Make sure ports 3000 and 8080 are free on your machine.
 - Any changes to the backend code require rebuilding the JAR and restarting the containers.
 
-For troubleshooting, see the
+For troubleshooting, see the comments in [`docker-compose.yaml`](docker-compose.yaml).
