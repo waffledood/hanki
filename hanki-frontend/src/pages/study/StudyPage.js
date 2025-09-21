@@ -1,37 +1,88 @@
 import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 function StudyPage() {
+  const [loading, setLoading] = useState(true);
+
+  const { deckId } = useParams();
+
+  const [deckDetails, setDeckDetails] = useState({});
+
+  const [currentCardIdZeroIndex, setCurrentCardId] = useState(0);
+  const currentCardIdOneIndex = currentCardIdZeroIndex + 1;
+
+  const [deckCards, setDeckCards] = useState([]);
+
+  const totalCards = deckCards.length;
+
+  const cardQuestion = loading
+    ? null
+    : deckCards[currentCardIdZeroIndex].question;
+  const cardAnswer = loading ? null : deckCards[currentCardIdZeroIndex].answer;
+
+  const progress = (currentCardIdOneIndex / totalCards) * 100;
+
   const [showAnswer, setShowAnswer] = useState(false);
-  const [currentCardId, setCurrentCardId] = useState(0);
 
-  const deckName = "Spanish Vocabulary - Beginner";
+  const axiosPrivate = useAxiosPrivate();
 
-  const cards = [
-    {
-      id: 23,
-      question: "What is 1 + 1?",
-      answer: "2",
-    },
-    {
-      id: 51,
-      question: "What is 6 / 2?",
-      answer: "3",
-    },
-  ];
-
-  const totalCards = cards.length;
-
-  let cardQuestion = cards[currentCardId].question;
-  let cardAnswer = cards[currentCardId].answer;
-
-  const progress = (currentCardId / totalCards) * 100;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    console.log("currentCardId: " + currentCardId);
+    let isMounted = true;
+    const controller = new AbortController();
 
-    cardQuestion = cards[currentCardId].question;
-    cardAnswer = cards[currentCardId].answer;
-  }, [currentCardId]);
+    const fetchDeckDetails = async () => {
+      try {
+        // fetch details of the specified Deck
+        const response = await axiosPrivate.get(`/decks/${deckId}`, {
+          signal: controller.signal,
+        });
+
+        isMounted && setDeckDetails(response.data);
+      } catch (err) {
+        // redirect user to login page if the refresh token expires
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    const fetchDeckCards = async () => {
+      try {
+        // fetch cards of the specified Deck
+        const response = await axiosPrivate.get(`decks/${deckId}/cards`, {
+          signal: controller.signal,
+        });
+
+        isMounted && setDeckCards(response.data);
+      } catch (err) {
+        // redirect user to login page if the refresh token expires
+        navigate("/login", { state: { from: location }, replace: true });
+      }
+    };
+
+    const fetchData = async () => {
+      try {
+        await Promise.all([fetchDeckDetails(), fetchDeckCards()]);
+      } catch (err) {
+        // Handle any errors that might occur during the fetch
+        console.error(err);
+      } finally {
+        // This will always run after both fetches have either succeeded or failed
+        isMounted && setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, []);
+
+  useEffect(() => {}, [currentCardIdZeroIndex]);
 
   const handleShowAnswer = () => {
     setShowAnswer(true);
@@ -51,9 +102,17 @@ function StudyPage() {
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <h1 className="text-lg font-semibold text-gray-800">{deckName}</h1>
+            <h1 className="text-lg font-semibold text-gray-800">
+              {deckDetails.name}
+            </h1>
             <div className="text-sm text-gray-500">
-              {currentCardId} / {totalCards} cards
+              {loading ? (
+                <p>Loading</p>
+              ) : (
+                <p>
+                  {currentCardIdOneIndex} / {totalCards} cards
+                </p>
+              )}
             </div>
           </div>
           <button
@@ -83,7 +142,7 @@ function StudyPage() {
               <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
                 <div className="flex items-center justify-between">
                   <div className="text-white text-sm font-medium opacity-90">
-                    Question {currentCardId}
+                    Question {currentCardIdOneIndex}
                   </div>
                   <div className="text-white text-sm opacity-75">
                     <i className="fas fa-brain mr-2"></i>
@@ -161,7 +220,7 @@ function StudyPage() {
                 {/* TODO - Implement logic for clicking Space to reveal cardAnswer */}
                 <div className="flex items-center">
                   <i className="fas fa-keyboard mr-2"></i>
-                  Press Space to reveal cardAnswer
+                  Press Space to reveal Answer
                 </div>
 
                 {/* TODO - Implement logic to go to next & previous Cards*/}
