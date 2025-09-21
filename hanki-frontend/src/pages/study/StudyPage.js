@@ -23,6 +23,8 @@ function StudyPage() {
 
   const progress = (currentCardIdOneIndex / totalCards) * 100;
 
+  const [completedStudying, setCompletedStudying] = useState(false);
+
   const [showAnswer, setShowAnswer] = useState(false);
 
   const axiosPrivate = useAxiosPrivate();
@@ -98,6 +100,7 @@ function StudyPage() {
       // TODO - handle current Card id if it is the last in the index
       if (nextId === totalCards) {
         console.log("Completed studying Deck!");
+        completedStudying(true);
 
         return prev;
       }
