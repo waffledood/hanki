@@ -1,0 +1,182 @@
+import React, { useEffect, useState } from "react";
+
+function StudyPage() {
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [currentCardId, setCurrentCardId] = useState(0);
+
+  const deckName = "Spanish Vocabulary - Beginner";
+
+  const cards = [
+    {
+      id: 23,
+      question: "What is 1 + 1?",
+      answer: "2",
+    },
+    {
+      id: 51,
+      question: "What is 6 / 2?",
+      answer: "3",
+    },
+  ];
+
+  const totalCards = cards.length;
+
+  let cardQuestion = cards[currentCardId].question;
+  let cardAnswer = cards[currentCardId].answer;
+
+  const progress = (currentCardId / totalCards) * 100;
+
+  useEffect(() => {
+    console.log("currentCardId: " + currentCardId);
+
+    cardQuestion = cards[currentCardId].question;
+    cardAnswer = cards[currentCardId].answer;
+  }, [currentCardId]);
+
+  const handleShowAnswer = () => {
+    setShowAnswer(true);
+  };
+
+  const handleRating = (rating) => {
+    // TODO - handle rating set for current Card
+
+    // Move to next Card id
+    setCurrentCardId((prev) => prev + 1);
+    setShowAnswer(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <h1 className="text-lg font-semibold text-gray-800">{deckName}</h1>
+            <div className="text-sm text-gray-500">
+              {currentCardId} / {totalCards} cards
+            </div>
+          </div>
+          <button
+            id="closeStudyPage"
+            className="flex items-center p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+          >
+            <i className="fas fa-times text-gray-600 text-xl"></i>
+          </button>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="w-full bg-gray-200 h-1">
+          <div
+            className="bg-indigo-600 h-1 transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-6 py-12">
+        <div className="flex justify-center">
+          <div className="w-full max-w-2xl">
+            {/* Study Card */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+              {/* Card Header */}
+              <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-6">
+                <div className="flex items-center justify-between">
+                  <div className="text-white text-sm font-medium opacity-90">
+                    Question {currentCardId}
+                  </div>
+                  <div className="text-white text-sm opacity-75">
+                    <i className="fas fa-brain mr-2"></i>
+                    Study Mode
+                  </div>
+                </div>
+              </div>
+
+              {/* Question Section */}
+              <div className="px-8 py-12">
+                <div className="text-center">
+                  <div className="text-3xl font-light text-gray-800 leading-relaxed mb-8">
+                    {cardQuestion}
+                  </div>
+
+                  {/* Show Answer Button or Answer */}
+                  {!showAnswer ? (
+                    <button
+                      onClick={handleShowAnswer}
+                      className="rounded-xl whitespace-nowrap bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 text-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
+                    >
+                      <i className="fas fa-eye mr-3"></i>
+                      Show Answer
+                    </button>
+                  ) : (
+                    <div className="space-y-8">
+                      {/* Answer Display */}
+                      <div className="border-t border-gray-200 pt-8">
+                        <div className="text-sm font-medium text-gray-500 mb-3 uppercase tracking-wide">
+                          Answer
+                        </div>
+                        <div className="text-2xl font-semibold text-green-700 mb-8">
+                          {cardAnswer}
+                        </div>
+                      </div>
+
+                      {/* Rating Buttons */}
+                      <div className="space-y-4">
+                        <div className="text-sm font-medium text-gray-600 mb-4">
+                          How well did you know this?
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                          <button
+                            onClick={() => handleRating("hard")}
+                            className="rounded-xl whitespace-nowrap bg-red-500 hover:bg-red-600 text-white px-6 py-3 font-medium transition-colors cursor-pointer flex items-center justify-center"
+                          >
+                            <i className="fas fa-times-circle mr-2"></i>
+                            Hard
+                          </button>
+                          <button
+                            onClick={() => handleRating("good")}
+                            className="rounded-xl whitespace-nowrap bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 font-medium transition-colors cursor-pointer flex items-center justify-center"
+                          >
+                            <i className="fas fa-check-circle mr-2"></i>
+                            Good
+                          </button>
+                          <button
+                            onClick={() => handleRating("easy")}
+                            className="rounded-xl whitespace-nowrap bg-green-500 hover:bg-green-600 text-white px-6 py-3 font-medium transition-colors cursor-pointer flex items-center justify-center"
+                          >
+                            <i className="fas fa-star mr-2"></i>
+                            Easy
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Study Tips */}
+            <div className="mt-8 text-center">
+              <div className="inline-flex items-center space-x-6 text-sm text-gray-500">
+                {/* TODO - Implement logic for clicking Space to reveal cardAnswer */}
+                <div className="flex items-center">
+                  <i className="fas fa-keyboard mr-2"></i>
+                  Press Space to reveal cardAnswer
+                </div>
+
+                {/* TODO - Implement logic to go to next & previous Cards*/}
+                <div className="flex items-center">
+                  <i className="fas fa-arrow-left mr-2"></i>
+                  <i className="fas fa-arrow-right mr-2"></i>
+                  Navigate cards
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default StudyPage;
