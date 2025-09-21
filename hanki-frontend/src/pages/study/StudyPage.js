@@ -100,7 +100,7 @@ function StudyPage() {
       // TODO - handle current Card id if it is the last in the index
       if (nextId === totalCards) {
         console.log("Completed studying Deck!");
-        completedStudying(true);
+        setCompletedStudying(true);
 
         return prev;
       }
