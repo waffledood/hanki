@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import Statistics from "./pages/Statistics";
 import RegisterPage from "./pages/auth/RegisterPage";
 import RequireAuth from "./components/RequireAuth";
+import StudyPage from "./pages/study/StudyPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/decks/:deckId" element={<DeckPage />} />
+          <Route path="/study/:deckId" element={<StudyPage />} />
         </Route>
       </Routes>
     </div>
