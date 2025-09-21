@@ -9,7 +9,7 @@ function StudyPage() {
 
   const [deckDetails, setDeckDetails] = useState({});
 
-  const [currentCardIdZeroIndex, setCurrentCardId] = useState(0);
+  const [currentCardIdZeroIndex, setCurrentCardIdZeroIndex] = useState(0);
   const currentCardIdOneIndex = currentCardIdZeroIndex + 1;
 
   const [deckCards, setDeckCards] = useState([]);
@@ -92,7 +92,18 @@ function StudyPage() {
     // TODO - handle rating set for current Card
 
     // Move to next Card id
-    setCurrentCardId((prev) => prev + 1);
+    setCurrentCardIdZeroIndex((prev) => {
+      const nextId = prev + 1;
+
+      // TODO - handle current Card id if it is the last in the index
+      if (nextId === totalCards) {
+        console.log("Completed studying Deck!");
+
+        return prev;
+      }
+
+      return nextId;
+    });
     setShowAnswer(false);
   };
 
