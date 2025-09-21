@@ -1,12 +1,6 @@
 import React from "react";
 
-function StudyCompletePage({ children, totalCards }) {
-  const stats = {
-    hard: 1,
-    good: 10,
-    easy: 7,
-  };
-
+function StudyCompletePage({ children, totalCards, stats }) {
   const handleRestartSession = () => {
     // TODO - implement handleRestartSession
   };
