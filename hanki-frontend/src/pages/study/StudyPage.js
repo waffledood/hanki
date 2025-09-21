@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import StudyCompletePage from "./StudyCompletePage";
 
@@ -19,8 +19,14 @@ function StudyPage() {
 
   const cardQuestion = loading
     ? null
+    : totalCards === 0
+    ? null
     : deckCards[currentCardIdZeroIndex].question;
-  const cardAnswer = loading ? null : deckCards[currentCardIdZeroIndex].answer;
+  const cardAnswer = loading
+    ? null
+    : totalCards === 0
+    ? null
+    : deckCards[currentCardIdZeroIndex].answer;
 
   const progress = (currentCardIdOneIndex / totalCards) * 100;
 
@@ -116,6 +122,32 @@ function StudyPage() {
     console.log(`Exiting Study mode for Deck ${deckId}`);
     navigate("/");
   };
+
+  // display a "No Cards Yet" page if the Deck has no cards
+  if (totalCards === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-6">
+            <i className="fas fa-layer-group text-3xl text-gray-400"></i>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-3">
+            No Cards Yet
+          </h2>
+          <p className="text-gray-600 mb-8">
+            You can't study with an empty Deck! <br />
+            Add some cards to start studying!
+          </p>
+          <Link to={`/decks/${deckId}`}>
+            <div className="rounded-xl whitespace-nowrap inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 font-medium transition-all duration-200">
+              <i className="fas fa-plus mr-2"></i>
+              Add Cards
+            </div>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
