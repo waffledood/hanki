@@ -110,6 +110,12 @@ function StudyPage() {
     setShowAnswer(false);
   };
 
+  const exitStudyPage = () => {
+    // when a user has completed studying a Deck, redirect them to the homepage
+    console.log(`Exiting Study mode for Deck ${deckId}`);
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
@@ -132,6 +138,7 @@ function StudyPage() {
           <button
             id="closeStudyPage"
             className="flex items-center p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+            onClick={exitStudyPage}
           >
             <i className="fas fa-times text-gray-600 text-xl"></i>
           </button>
