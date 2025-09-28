@@ -1,4 +1,5 @@
 import { getProgressColor } from "../utils/color";
+import { Link } from "react-router-dom";
 
 function Deck({ id, name, totalCards, dueCards, progress, lastStudied }) {
   return (
@@ -7,7 +8,9 @@ function Deck({ id, name, totalCards, dueCards, progress, lastStudied }) {
       className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer"
     >
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
+        <Link to={`/decks/${id}`}>
+          <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
+        </Link>
         <button className="text-gray-400 hover:text-gray-600">
           <i className="fas fa-ellipsis-h"></i>
         </button>
@@ -40,9 +43,11 @@ function Deck({ id, name, totalCards, dueCards, progress, lastStudied }) {
             ? new Date(lastStudied).toLocaleDateString()
             : "Not studied yet"}
         </span>
-        <button className="!rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm hover:bg-indigo-700 transition-colors duration-500 whitespace-nowrap">
-          Study Now
-        </button>
+        <Link to={`/study/${id}`}>
+          <button className="!rounded-lg bg-indigo-600 text-white px-4 py-2 text-sm hover:bg-indigo-700 transition-colors duration-500 whitespace-nowrap">
+            Study Now
+          </button>
+        </Link>
       </div>
     </div>
   );
