@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 
 function Deck({ id, name, totalCards, dueCards, progress, lastStudied }) {
   return (
-    <div
-      key={id}
-      className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer"
-    >
+    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer">
       <div className="flex justify-between items-start mb-4">
         <Link to={`/decks/${id}`}>
           <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
