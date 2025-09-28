@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-function StudyCompletePage({ children, totalCards, stats }) {
+function StudyCompletePage({ children, totalNumberOfCards, stats, deckId }) {
   const handleRestartSession = () => {
     // TODO - implement handleRestartSession
   };
@@ -16,7 +17,7 @@ function StudyCompletePage({ children, totalCards, stats }) {
             Study Session Complete!
           </h2>
           <p className="text-gray-600">
-            You've reviewed all {totalCards} cards in this deck
+            You've reviewed all {totalNumberOfCards} cards in this deck
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -40,13 +41,15 @@ function StudyCompletePage({ children, totalCards, stats }) {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={handleRestartSession}
-            className="!rounded-button whitespace-nowrap bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 font-medium transition-all duration-200 flex items-center justify-center"
-          >
-            <i className="fas fa-redo mr-2"></i>
-            Study Again
-          </button>
+          <Link to={`/study/${deckId}`}>
+            <button
+              onClick={handleRestartSession}
+              className="!rounded-button whitespace-nowrap bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 font-medium transition-all duration-200 flex items-center justify-center"
+            >
+              <i className="fas fa-redo mr-2"></i>
+              Study Again
+            </button>
+          </Link>
         </div>
       </div>
     </div>
