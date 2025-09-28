@@ -1,13 +1,20 @@
 import { getProgressColor } from "../utils/color";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Deck({ id, name, totalCards, dueCards, progress, lastStudied }) {
+  const navigate = useNavigate();
+
+  const cardClickHandler = () => {
+    navigate(`/decks/${id}`);
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer">
+    <div
+      className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 cursor-pointer"
+      onClick={cardClickHandler}
+    >
       <div className="flex justify-between items-start mb-4">
-        <Link to={`/decks/${id}`}>
-          <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
-        </Link>
+        <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
         <button className="text-gray-400 hover:text-gray-600">
           <i className="fas fa-ellipsis-h"></i>
         </button>
