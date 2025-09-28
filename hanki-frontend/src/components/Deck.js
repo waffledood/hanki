@@ -49,7 +49,7 @@ function Deck({ id, name, totalCards, dueCards, progress, lastStudied }) {
         </span>
         <Link to={`/study/${id}`}>
           <button className="rounded-full bg-indigo-600 w-10 h-10 flex items-center justify-center hover:bg-indigo-700 transition-colors duration-500">
-            <i class="fa-solid fa-play text-white text-md"></i>
+            <i className="fa-solid fa-play text-white text-md"></i>
           </button>
         </Link>
       </div>
