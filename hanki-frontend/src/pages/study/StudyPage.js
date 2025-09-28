@@ -153,7 +153,11 @@ function StudyPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {completedStudying ? (
         // TODO - remove hardcoded stats
-        <StudyCompletePage stats={{ hard: 10, good: 2, easy: 7 }} />
+        <StudyCompletePage
+          totalNumberOfCards={totalCards}
+          stats={{ hard: 10, good: 2, easy: 7 }}
+          deckId={deckId}
+        />
       ) : (
         <React.Fragment>
           {/* Header */}
