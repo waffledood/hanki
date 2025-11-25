@@ -395,10 +395,12 @@ function DeckPage() {
           )}
           {/* Action Buttons */}
           <div className="mb-2 flex flex-wrap gap-3">
-            <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
-              <i className="fas fa-book-open mr-2"></i>
-              Study Now
-            </button>
+            <Link to={`/study/${deckId}`}>
+              <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
+                <i className="fas fa-book-open mr-2"></i>
+                Study Now
+              </button>
+            </Link>
             <button className="bg-white hover:bg-gray-100 border border-gray-300 text-gray-700 px-4 py-2 rounded-md flex items-center cursor-pointer !rounded-button whitespace-nowrap transition-colors duration-500">
               <i className="fas fa-random mr-2"></i>
               Shuffle
