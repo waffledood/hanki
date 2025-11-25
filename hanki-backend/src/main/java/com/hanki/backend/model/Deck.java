@@ -1,5 +1,7 @@
 package com.hanki.backend.model;
 
+import org.hibernate.annotations.Formula;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -19,6 +21,9 @@ public class Deck {
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false, foreignKey = @ForeignKey(name = "fk_decks_users"))
     private User owner;
+
+    @Formula("(select count(*) from cards c where c.deck_id = id)")
+    private int totalCards;
 
     public Integer getId() {
         return id;
@@ -50,6 +55,14 @@ public class Deck {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public int getTotalCards() {
+        return totalCards;
+    }
+
+    public void setTotalCards(int totalCards) {
+        this.totalCards = totalCards;
     }
 
     public Deck() {}
