@@ -246,28 +246,9 @@ function Home() {
                 return 0;
             }
           })
-          .map(
-            ({
-              id,
-              name,
-              totalCards,
-              dueCards,
-              lastStudied,
-              progress,
-              category,
-            }) => (
-              <Deck
-                key={id}
-                id={id}
-                name={name}
-                totalCards={totalCards}
-                dueCards={dueCards}
-                lastStudied={lastStudied}
-                progress={progress}
-                category={category}
-              />
-            )
-          )}
+          .map(({ id, name, totalCards }) => (
+            <Deck key={id} id={id} name={name} totalCards={totalCards} />
+          ))}
       </div>
     );
   };
